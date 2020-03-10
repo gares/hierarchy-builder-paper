@@ -271,14 +271,14 @@ one, is called \emph{\mixin{}} and is embodied by a record, by convention named
 \coq{axioms}, that gathers operations and properties.
 
 \Mixins{} are declared via the \hbmixin{} command
-that takes a module name,
+that takes a record declaration with
 a type variable name and a possibly empty list of \factories{} for that type.
 The code between lines~\ref{demo:mixin:mot}
 and~\ref{demo:mixin:mot:end} declares a \mixin{} that can turn a naked
-type \coq{A} into a monoid, hence we chose the module name to be \coq{Monoid_of_Type}.
+type \coq{A} into a monoid, hence we chose the name to be \coq{Monoid_of_Type}.
 
-The \hbstructure{} command takes in input a name S and a possibly
-empty list of \factories{}.
+The \hbstructure{} command takes in input the definition S for a type
+\coq{A} together with a list of \factories{} for \coq{A}.
 It registers a structure S in the hierarchy placing
 any definition specific to that structure inside a Coq module named \coq{S}.
 Line~\ref{demo:structure:monoid} hence forges the \coq{Monoid} structure.
