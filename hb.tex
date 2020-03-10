@@ -380,7 +380,8 @@ structure of Abelian groups.
   addrC : commutative (add : A -> A -> A);
   addNr : left_inverse zero opp add;
 }.
-#\hbstructure{}# Definition AbelianGroup := { A of Monoid.axioms A & AbelianGroup_of_Monoid.axioms A }.
+#\hbstructure{}# Definition AbelianGroup :=
+  { A of Monoid.axioms A & AbelianGroup_of_Monoid.axioms A }.
 
 #\hbmixin{}# Record Ring_of_AbelianGroup A of AbelianGroup.axioms A := {
   one : A;
@@ -389,7 +390,8 @@ structure of Abelian groups.
   mul1r : left_id one mul;              mulr1 : right_id one mul;
   mulrDl : left_distributive mul add;   mulrDr : right_distributive mul add;
 }.
-#\hbstructure{}# Definition Ring := { A of AbelianGroup.axioms A & Ring_of_AbelianGroup.axioms A }.
+#\hbstructure{}# Definition Ring :=
+  { A of AbelianGroup.axioms A & Ring_of_AbelianGroup.axioms A }.
 
 Lemma addrN {R : AbelianGroup.type} : right_inverse zero opp add.               #\label{demo2:proof:addrN}#
 Proof. by move=>x; rewrite addrC addNr. Qed.
@@ -441,7 +443,9 @@ will look indistinguishable from the old \coq{Ring_of_Monoid} \mixin{}
 and hence grant backward compatibility between version V3 and version V1.
 
 \begin{coqcode}
-#\hbfactory{}# Record Ring_of_Monoid A of Monoid.axioms A := { ... (* unchanged, see page 2 line 13 *) ... }.
+#\hbfactory{}# Record Ring_of_Monoid A of Monoid.axioms A := {
+  ... (* unchanged, see page 2 line 13 *) ...
+}.
 #\hbbuilders{}# Context A (f : Ring_of_Monoid.axioms A).                          #\label{demo3:variable:f}#
 
   Lemma addrC : commutative add. Proof. (* The same proof as before *) Qed.
@@ -494,8 +498,10 @@ two lines equivalent (the former declares
 rings in V1) since they both describe the same set of \mixins{}.
 
 \begin{coqcode}
-#\hbstructure{}# Definition Ring := { A of Monoid.axioms A & Ring_of_Monoid.axioms A }.
-#\hbstructure{}# Definition Ring := { A of AbelianGroup.axioms A & Ring_of_AbelianGroup.axioms A }.
+#\hbstructure{}# Definition Ring :=
+  { A of Monoid.axioms A & Ring_of_Monoid.axioms A }.
+#\hbstructure{}# Definition Ring :=
+  { A of AbelianGroup.axioms A & Ring_of_AbelianGroup.axioms A }.
 \end{coqcode}
 
 This is another example of client code that would not break: the client of the hierarchy is allowed to declare new
@@ -629,7 +635,7 @@ from regular \factories{}, since they are a special cases.
 
 \begin{command} to declare a new mixin:
 \begin{coqcode}
-#\hbmixin{}# Record M T #$f_1\ \ldots\ f_n$# := { .. }. #\hbend{}#.
+#\hbmixin{}# Record M T of #$f_1\ \ldots\ f_n$# := { .. }.
 \end{coqcode}
   Creates a module \coq{M} with a record
   \coq{M.axioms}, which depends on the \mixins{}
@@ -650,7 +656,7 @@ from regular \factories{}, since they are a special cases.
 
 \begin{command} to declare a new \factory{} and generate new \mixinbuilders:
 \begin{coqcode}
-#\hbfactory{}# Record M T #$f_1\ \ldots\ f_n$# := { .. }.
+#\hbfactory{}# Record M T of #$f_1\ \ldots\ f_n$# := { .. }.
 #\hbbuilders{}# Context T (a : M.axioms A).
 
   Definition #$b_{n+1}$# : #$f_{n+1}$# T .. := ...
@@ -888,13 +894,15 @@ multiplication operator \coq{mul} and its identity element \coq{one}.
 \end{wrapfigure}
 \
 \begin{coqcode}
-#\hbmixin{}# Record SemiRing_of_Monoid A of Monoid.axioms A := {
+#\hbmixin{}# Record SemiRing_of_Monoid A 
+    of Monoid.axioms A := {
   one : A;
   mul : A -> A -> A;
   (* 7 axioms are omitted. *)
 }.
 
-#\hbfactory{}# Record Ring_of_AbelianGroup A of AbelianGroup.axioms A := {
+#\hbfactory{}# Record Ring_of_AbelianGroup A
+    of AbelianGroup.axioms A := {
   (* 2 operators and 5 axioms are omitted. *)
 }.
 #\hbbuilders{}# Context A (a : Ring_of_AbelianGroup A).
