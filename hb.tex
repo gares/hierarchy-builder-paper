@@ -211,7 +211,7 @@ two simpler ones, break user code.
 In this paper we describe \HB{}, a high level language
 to \emph{build} hierarchies of algebraic structures and to make these hierarchies
 \emph{evolve} without breaking user code. The key concepts are the ones of
-\emph{\factory{}} and \emph{\phantterm{}} that let the hierarchy developer describe an actual
+\emph{\factory{}}, \emph{\builder{}} and \emph{\phantterm{}} that let the hierarchy developer describe an actual
 interface for their library. Behind that interface the developer can provide
 appropriate code to ensure backward compatibility.
 We implement the \HB{} language by compiling it
@@ -267,18 +267,18 @@ structures: \coq{Monoid} and \coq{Ring}.
 
 In order to build a structure we need to declare some \factories{} and
 later assemble them. One kind of \factory{} supported by \HB{}, the simplest
-one, is called \emph{\mixin{}} and is embodied by a record, by convention named
-\coq{axioms}, that gathers operations and properties.
+one, is called \emph{\mixin{}} and is embodied by a record
+that gathers operations and properties.
 
 \Mixins{} are declared via the \hbmixin{} command
 that takes a record declaration with
-a type variable name and a possibly empty list of \factories{} for that type.
+a type parameter and a possibly empty list of \factories{} for that type.
 The code between lines~\ref{demo:mixin:mot}
 and~\ref{demo:mixin:mot:end} declares a \mixin{} that can turn a naked
 type \coq{A} into a monoid, hence we chose the name to be \coq{Monoid_of_Type}.
 
-The \hbstructure{} command takes in input the definition S for a type
-\coq{A} together with a list of \factories{} for \coq{A}.
+The \hbstructure{} command takes in input a definition for a sigma type S
+that equips \coq{A} with a list of \factories{}.
 It registers a structure S in the hierarchy placing
 any definition specific to that structure inside a Coq module named \coq{S}.
 Line~\ref{demo:structure:monoid} hence forges the \coq{Monoid} structure.
@@ -356,7 +356,7 @@ a plain record constructor for \coq{Ring_of_Monoid}, since that
 would require more arguments, namely the monoid ones (see the \coq{_}
 at line~\ref{demo:theory:z:ring:axioms}). The
 \phantterm{} synthesized by \HB{} infers them automatically
-(as in~\cite[Section 7]{DBLP:conf/itp/MahboubiT13}) thanks to the \coq{hb.canonical}
+(as in~\cite[Section 7]{DBLP:conf/itp/MahboubiT13}) thanks to the \hbinstance{}
 declaration given just above.
 
 From now on the axioms as well as the abstract theory of rings apply to
