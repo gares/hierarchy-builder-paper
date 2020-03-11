@@ -247,9 +247,9 @@ structures: \coq{Monoid} and \coq{Ring}.
   add0r : left_id zero add;            (* `zero` is the left and right neutral    *)
   addr0 : right_id zero add;           (*   element with respect to `add`.        *)
 }.                                                             #\label{demo:mixin:mot:end}#
-#\hbstructure{}# Definition Monoid := { A of Monoid_of_Type.axioms A }.        #\label{demo:structure:monoid}#
+#\hbstructure{}# Definition Monoid := { A of Monoid_of_Type A }.        #\label{demo:structure:monoid}#
 
-#\hbmixin{}# Record Ring_of_Monoid A of Monoid.axioms A := {       #\label{demo:mixin:rom}#
+#\hbmixin{}# Record Ring_of_Monoid A of Monoid A := {       #\label{demo:mixin:rom}#
   one : A;
   opp : A -> A;
   mul : A -> A -> A;
@@ -261,7 +261,7 @@ structures: \coq{Monoid} and \coq{Ring}.
   mulrDl : left_distributive mul add;  (* `mul` is left and right distributive    *)
   mulrDr : right_distributive mul add; (*   over `add`.                           *)
 }.
-#\hbstructure{}# Definition Ring := { A of Monoid.axioms A & Ring_of_Monoid.axioms A }. #\label{demo:structure:ring}#
+#\hbstructure{}# Definition Ring := { A of Monoid A & Ring_of_Monoid A }. #\label{demo:structure:ring}#
 
 \end{coqcode}
 
@@ -286,7 +286,7 @@ Line~\ref{demo:structure:monoid} hence forges the \coq{Monoid} structure.
 Line~\ref{demo:mixin:rom} declares a second \mixin{} collecting the operations
 and properties that are needed in order to enrich a monoid to a ring, hence
 the name \coq{Ring_of_Monoid}. Indeed this time the type variable \coq{A}
-is followed by \coq{Monoid.axioms} that enriches
+is followed by \coq{Monoid} that enriches
 \coq{A} with the operations and properties of monoids. As a consequence
 \coq{add} and \coq{zero} can be used to express the new properties.
 
@@ -304,13 +304,13 @@ Check @addNr.      (* addNr        :   forall R : Ring.type, left_inverse zero o
 Lemma addrC : forall R : Ring.type, commutative (@add R).                       #\label{demo:theory:state:addrC}#
 Proof. (* Proof by Hankel 1867, omitted for brevity *) Qed.
 
-Definition Z_Monoid_axioms : Monoid_of_Type.axioms Z :=                         #\label{demo:theory:z:monoid:axioms}#
-  Monoid_of_Type.Axioms Z 0 Z.add Z.add_assoc Z.add_0_l Z.add_0_r.
+Definition Z_Monoid_axioms : Monoid_of_Type Z :=                         #\label{demo:theory:z:monoid:axioms}#
+  Monoid_of_Type.Build Z 0 Z.add Z.add_assoc Z.add_0_l Z.add_0_r.
 
 #\hbinstance{}# Z Z_Monoid_axioms.                                            #\label{demo:theory:z:monoid:canonical}#
 
-Definition Z_Ring_axioms : Ring_of_Monoid.axioms Z _ :=                        #\label{demo:theory:z:ring:axioms}#
-  Ring_of_Monoid.Axioms Z 1 Z.opp Z.mul
+Definition Z_Ring_axioms : Ring_of_Monoid Z _ :=                        #\label{demo:theory:z:ring:axioms}#
+  Ring_of_Monoid.Build Z 1 Z.opp Z.mul
     Z.add_opp_diag_l Z.add_opp_diag_r Z.mul_assoc Z.mul_1_l Z.mul_1_r
     Z.mul_add_distr_r Z.mul_add_distr_l.
 
@@ -341,7 +341,7 @@ ring axioms imply the commutativity of the underlying monoid
 (line~\ref{demo:theory:state:addrC}). This simple example shows we can
 populate the theory of abstract rings with new results.
 
-We use the \coq{Monoid_of_Type.Axioms} \emph{\phantterm{}}
+We use the \coq{Monoid_of_Type.Build} \emph{\phantterm{}}
 (line~\ref{demo:theory:z:monoid:axioms})
 in order to build an instance of the \coq{Monoid}
 structure for binary integers \coq{Z}.
@@ -349,10 +349,10 @@ We then register that monoid instance as the canonical one on \coq{Z}
 (line~\ref{demo:theory:z:monoid:canonical}) via the command
 \coq{hb.canonical}.
 We can similarly declare that \coq{Z} forms a ring by using
-the \coq{Ring_of_Monoid.Axioms} \phantterm{}
+the \coq{Ring_of_Monoid.Build} \phantterm{}
 (lines~\ref{demo:theory:z:ring:axioms} and~\ref{demo:theory:z:ring:canonical}).
-Note that the \coq{Ring_of_Monoid.Axioms} \phantterm{} is not
-a plain record constructor for \coq{Ring_of_Monoid.axioms}, since that
+Note that the \coq{Ring_of_Monoid.Build} \phantterm{} is not
+a plain record constructor for \coq{Ring_of_Monoid}, since that
 would require more arguments, namely the monoid ones (see the \coq{_}
 at line~\ref{demo:theory:z:ring:axioms}). The
 \phantterm{} synthesized by \HB{} infers them automatically
@@ -373,25 +373,23 @@ structure of Abelian groups.
 
 \begin{coqcode}
 #\hbmixin{}# Record Monoid_of_Type A := { ... (* unchanged *) ... }.
-#\hbstructure{}# Definition Monoid := { A & Monoid_of_Type.axioms A }.
+#\hbstructure{}# Definition Monoid := { A of Monoid_of_Type A }.
 
-#\hbmixin{}# Record AbelianGroup_of_Monoid A of Monoid.axioms A := {
+#\hbmixin{}# Record AbelianGroup_of_Monoid A of Monoid A := {
   opp : A -> A;
   addrC : commutative (add : A -> A -> A);
   addNr : left_inverse zero opp add;
 }.
-#\hbstructure{}# Definition AbelianGroup :=
-  { A of Monoid.axioms A & AbelianGroup_of_Monoid.axioms A }.
+#\hbstructure{}# Definition AbelianGroup := { A of Monoid A & AbelianGroup_of_Monoid A }.
 
-#\hbmixin{}# Record Ring_of_AbelianGroup A of AbelianGroup.axioms A := {
+#\hbmixin{}# Record Ring_of_AbelianGroup A of AbelianGroup A := {
   one : A;
   mul : A -> A -> A;
   mulrA : associative mul;
   mul1r : left_id one mul;              mulr1 : right_id one mul;
   mulrDl : left_distributive mul add;   mulrDr : right_distributive mul add;
 }.
-#\hbstructure{}# Definition Ring :=
-  { A of AbelianGroup.axioms A & Ring_of_AbelianGroup.axioms A }.
+#\hbstructure{}# Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
 
 Lemma addrN {R : AbelianGroup.type} : right_inverse zero opp add.               #\label{demo2:proof:addrN}#
 Proof. by move=>x; rewrite addrC addNr. Qed.
@@ -413,7 +411,7 @@ groups.
 With this new version of the hierarchy, that we name V2, code written
 for version V1 breaks. For example the declaration of the canonical ring over
 the integers fails, if only
-because we do not have a \coq{Ring_of_Monoid.Axioms} \phantterm{} anymore.
+because we do not have a \coq{Ring_of_Monoid.Build} \phantterm{} anymore.
 
 Our objective is to obtain a version of the hierarchy, that we name V3, that does
 not only feature Abelian groups but that is also backward compatible
@@ -443,26 +441,26 @@ will look indistinguishable from the old \coq{Ring_of_Monoid} \mixin{}
 and hence grant backward compatibility between version V3 and version V1.
 
 \begin{coqcode}
-#\hbfactory{}# Record Ring_of_Monoid A of Monoid.axioms A := {
+#\hbfactory{}# Record Ring_of_Monoid A of Monoid A := {
   ... (* unchanged, see page 2 line 13 *) ...
 }.
-#\hbbuilders{}# Context A (f : Ring_of_Monoid.axioms A).                          #\label{demo3:variable:f}#
+#\hbbuilders{}# Context A (f : Ring_of_Monoid A).                          #\label{demo3:variable:f}#
 
   Lemma addrC : commutative add. Proof. (* The same proof as before *) Qed.
 
   Definition to_AbelianGroup_of_Monoid :=
-    AbelianGroup_of_Monoid.Axioms A (opp f) addrC (addNr f). (* addrN unused *)
+    AbelianGroup_of_Monoid.Build A (opp f) addrC (addNr f). (* addrN unused *)
   #\hbinstance{}# A to_AbelianGroup_of_Monoid.
 
   Definition to_Ring_of_AbelianGroup :=
-    Ring_of_AbelianGroup.Axioms A (one f) (mul f)
+    Ring_of_AbelianGroup.Build A (one f) (mul f)
       (mulrA f) (mul1r f) (mulr1 f) (mulrDl f) (mulrDr f).
   #\hbinstance{}# A to_Ring_of_AbelianGroup.
 
 #\hbend{}#.
 \end{coqcode}
 
-The record \coq{Ring_of_Monoid.axioms} is the same we declared as a \mixin{}
+The record \coq{Ring_of_Monoid} is the same we declared as a \mixin{}
 in version V1. In order to make a \factory{} out of it we equip it with
 two definitions that embody the \emph{\builder{}s}.
 The first is \coq{to_AbelianGroup_of_Monoid} and
@@ -470,7 +468,7 @@ explains how to build an \coq{AbelianGroup} structure out of the \factory{}
 axioms (named \coq{f}, line~\ref{demo3:variable:f}).
 This construction is also registered as canonical for \coq{A},
 so that the next construction \coq{to_Ring_of_AbelianGroup} can call
-the \coq{Ring_of_AbelianGroup.Axioms} \phantterm{} that requires \coq{A} to be
+the \coq{Ring_of_AbelianGroup.Build} \phantterm{} that requires \coq{A} to be
 an \coq{AbelianGroup}.
 It is worth pointing out that the proof of \coq{addrC} we had in V1 is now
 required in order to write the \builder{} for Abelian groups, while
@@ -479,9 +477,9 @@ the theory of Abelian groups, see line~\ref{demo2:proof:addrN} of the previous
 code snippet).
 
 Thanks to this \factory{} we can now declare \coq{Z} to be an instance
-of a ring using the \coq{Ring_of_Monoid.Axioms} \phantterm{}.
+of a ring using the \coq{Ring_of_Monoid.Build} \phantterm{}.
 The associated \builder{}s generate, behind the scenes, instances of the
-\coq{Ring_of_AbelianGroup.axioms} and \coq{AbelianGroup_of_Monoid.axioms} \mixins{}
+\coq{Ring_of_AbelianGroup} and \coq{AbelianGroup_of_Monoid} \mixins{}
 that in turn are used to build instances of the \coq{AbelianGroup} and \coq{Ring}
 structures. Indeed, when used in the context of the hierarchy version V3,
 the command \hbinstance{} \coq{Z Z_Ring_axioms}
@@ -498,10 +496,8 @@ two lines equivalent (the former declares
 rings in V1) since they both describe the same set of \mixins{}.
 
 \begin{coqcode}
-#\hbstructure{}# Definition Ring :=
-  { A of Monoid.axioms A & Ring_of_Monoid.axioms A }.
-#\hbstructure{}# Definition Ring :=
-  { A of AbelianGroup.axioms A & Ring_of_AbelianGroup.axioms A }.
+#\hbstructure{}# Definition Ring := { A of Monoid A & Ring_of_Monoid A }.
+#\hbstructure{}# Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
 \end{coqcode}
 
 This is another example of client code that would not break: the client of the hierarchy is allowed to declare new
@@ -638,11 +634,11 @@ from regular \factories{}, since they are a special cases.
 #\hbmixin{}# Record M T of #$f_1\ \ldots\ f_n$# := { .. }.
 \end{coqcode}
   Creates a module \coq{M} with a record
-  \coq{M.axioms}, which depends on the \mixins{}
-  \(\requires{}(\coq{M.axioms}) =
+  \coq{M}, which depends on the \mixins{}
+  \(\requires{}(\coq{M}) =
   \provides{}^\star\left(\enum{f_1}{f_n}\right)\), and registers this
   new record both as a \mixin{} and a \factory{}. It also creates a
-  \phantterm{} \coq{M.Axioms.}
+  \phantterm{} \coq{M.Build.}
 \end{command}
 
 \begin{command} to declare an instance: \hbinstance{}
@@ -657,7 +653,7 @@ from regular \factories{}, since they are a special cases.
 \begin{command} to declare a new \factory{} and generate new \mixinbuilders:
 \begin{coqcode}
 #\hbfactory{}# Record M T of #$f_1\ \ldots\ f_n$# := { .. }.
-#\hbbuilders{}# Context T (a : M.axioms A).
+#\hbbuilders{}# Context T (a : M A).
 
   Definition #$b_{n+1}$# : #$f_{n+1}$# T .. := ...
   #\hbinstance{}# T #$b_{n+1}$#.
@@ -667,13 +663,13 @@ from regular \factories{}, since they are a special cases.
 #\hbend{}#.
 \end{coqcode}
   Creates a module \coq{M} with a record
-  \coq{M.axioms}, which depends on the mixins
-  \(\requires{}(\coq{M.axioms}) =
+  \coq{M}, which depends on the mixins
+  \(\requires{}(\coq{M}) =
   \provides{}^\star\left(\enum{f_1}{f_n}\right)\) and registers this
   new record as a factory. We then use the \factoryinstances{}
   \(b_{n+1}, \ldots, b_{n+k}\) provided by the user and derive
   \mixinbuilders{} from them, so that
-  \(\provides{}(\coq{M.axioms}) = \provides{}^\star\left(\enum{f_{n+1}}{f_{n+k}}\right).\)
+  \(\provides{}(\coq{M}) = \provides{}^\star\left(\enum{f_{n+1}}{f_{n+k}}\right).\)
 
   It is thus necessary that
   \(\requires{}^\star\left(\enum{f_{n+1}}{f_{n+k}}\right) \subseteq
@@ -817,7 +813,7 @@ As in \cite[section 2.4]{DBLP:conf/tphol/GarillotGMR09}\cite[section 2]{KSdraft}
 \begin{coqcode}
 Module Monoid.
 Record axioms (T : Type) : Type :=
-  Class { Monoid_of_Type_mixin : Monoid_of_Type.axioms T; }.
+  Class { Monoid_of_Type_mixin : Monoid_of_Type T; }.
 Structure type : Type := Pack { sort : Type; class : axioms sort; }.
 End Monoid.
 \end{coqcode}
@@ -844,14 +840,14 @@ Lemma addrA {T : Monoid.type} : associative (@add T).
 
 Next we define Abelian groups.
 Since the monoid structure is the bottom of this hierarchy its class record
-\coq{Monoid.axioms} consists just one \mixin{}. In contrast the class record
+\coq{Monoid} consists just one \mixin{}. In contrast the class record
 of Abelian groups consists of two \mixins{} where the second one depends
  on the former (since Abelian groups inherit from monoids).
 \begin{coqcode}
 Module AbelianGroup.
 Record axioms (T : Type) : Type := Class {
-  Monoid_of_Type_mixin : Monoid_of_Type.axioms T;
-  AbelianGroup_of_Monoid_mixin : AbelianGroup_of_Monoid.axioms T Monoid_of_Type_mixin; }.
+  Monoid_of_Type_mixin : Monoid_of_Type T;
+  AbelianGroup_of_Monoid_mixin : AbelianGroup_of_Monoid T Monoid_of_Type_mixin; }.
 Structure type : Type := Pack { sort : Type; class : axioms sort }.
 End AbelianGroup.
 \end{coqcode}
@@ -865,8 +861,8 @@ and a coercion between
 structure records (line~\ref{demo4:coe:ag:monoid:type}) relying on the first one.
 \begin{coqcode}
 Coercion AbelianGroup.sort : AbelianGroup.type >-> Sortclass.
-Coercion AbelianGroup_class_to_Monoid_class (T : Type) (c : AbelianGroup.axioms T) : #\label{demo4:coe:ag:monoid:class}#
-  Monoid.axioms T := Monoid.Class T (AbelianGroup.Monoid_of_Type_mixin T c).
+Coercion AbelianGroup_class_to_Monoid_class (T : Type) (c : AbelianGroup T) : #\label{demo4:coe:ag:monoid:class}#
+  Monoid T := Monoid.Class T (AbelianGroup.Monoid_of_Type_mixin T c).
 Coercion AbelianGroup_to_Monoid (T : AbelianGroup.type) : Monoid.type := #\label{demo4:coe:ag:monoid:type}#
   Monoid.Pack (AbelianGroup.sort T) (AbelianGroup.class T).
 
@@ -895,14 +891,14 @@ multiplication operator \coq{mul} and its identity element \coq{one}.
 \
 \begin{coqcode}
 #\hbmixin{}# Record SemiRing_of_Monoid A 
-    of Monoid.axioms A := {
+    of Monoid A := {
   one : A;
   mul : A -> A -> A;
   (* 7 axioms are omitted. *)
 }.
 
 #\hbfactory{}# Record Ring_of_AbelianGroup A
-    of AbelianGroup.axioms A := {
+    of AbelianGroup A := {
   (* 2 operators and 5 axioms are omitted. *)
 }.
 #\hbbuilders{}# Context A (a : Ring_of_AbelianGroup A).
@@ -915,8 +911,8 @@ the definition of semirings and Abelian groups are quite similar:
 \begin{coqcode}
 Module SemiRing.
 Record axioms (T : Type) : Type := Class {
-  Monoid_of_Type_mixin : Monoid_of_Type.axioms T;
-  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid.axioms T Monoid_of_Type_mixin; }.
+  Monoid_of_Type_mixin : Monoid_of_Type T;
+  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid T Monoid_of_Type_mixin; }.
 Structure type : Type := Pack { sort : Type; class : axioms sort; }.
 End SemiRing.
 \end{coqcode}
@@ -938,9 +934,9 @@ three structures.
 \begin{coqcode}
 Module Ring.
 Record axioms (T : Type) : Type := Class {
-  Monoid_of_Type_mixin : Monoid_of_Type.axioms T;
-  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid.axioms T Monoid_of_Type_mixin;
-  AbelianGroup_of_Monoid_mixin : AbelianGroup_of_Monoid.axioms T Monoid_of_Type_mixin; }.
+  Monoid_of_Type_mixin : Monoid_of_Type T;
+  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid T Monoid_of_Type_mixin;
+  AbelianGroup_of_Monoid_mixin : AbelianGroup_of_Monoid T Monoid_of_Type_mixin; }.
 Structure type : Type := Pack { sort : Type; class : axioms sort; }.
 End Ring.
 

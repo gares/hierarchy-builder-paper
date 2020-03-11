@@ -10,9 +10,9 @@ HB.mixin Record Monoid_of_Type A := {
   add0r : left_id zero add;
   addr0 : right_id zero add;
 }.
-HB.structure Definition Monoid := { A of Monoid_of_Type.axioms A }.
+HB.structure Definition Monoid := { A of Monoid_of_Type A }.
 
-HB.mixin Record Ring_of_Monoid A of Monoid.axioms A := {
+HB.mixin Record Ring_of_Monoid A of Monoid A := {
   one : A;
   opp : A -> A;
   mul : A -> A -> A;
@@ -24,7 +24,7 @@ HB.mixin Record Ring_of_Monoid A of Monoid.axioms A := {
   mulrDl : left_distributive mul add;
   mulrDr : right_distributive mul add;
 }.
-HB.structure Definition Ring := { A of Monoid.axioms A & Ring_of_Monoid.axioms A }.
+HB.structure Definition Ring := { A of Monoid A & Ring_of_Monoid A }.
 
 Declare Scope hb_scope.
 Delimit Scope hb_scope with G.
@@ -64,16 +64,16 @@ HB.mixin Record Monoid_of_Type A := {
   add0r : left_id zero add;
   addr0 : right_id zero add;
 }.
-HB.structure Definition Monoid := { A of Monoid_of_Type.axioms A }.
+HB.structure Definition Monoid := { A of Monoid_of_Type A }.
 
-HB.mixin Record AbelianGroup_of_Monoid A of Monoid.axioms A := {
+HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
   opp : A -> A;
   addrC : commutative (add : A -> A -> A);
   addNr : left_inverse zero opp add;
 }.
-HB.structure Definition AbelianGroup := { A of Monoid.axioms A & AbelianGroup_of_Monoid.axioms A }.
+HB.structure Definition AbelianGroup := { A of Monoid A & AbelianGroup_of_Monoid A }.
 
-HB.mixin Record Ring_of_AbelianGroup A of AbelianGroup.axioms A := {
+HB.mixin Record Ring_of_AbelianGroup A of AbelianGroup A := {
   one : A;
   mul : A -> A -> A;
   mulrA : associative mul;
@@ -82,7 +82,7 @@ HB.mixin Record Ring_of_AbelianGroup A of AbelianGroup.axioms A := {
   mulrDl : left_distributive mul add;
   mulrDr : right_distributive mul add;
 }.
-HB.structure Definition Ring := { A of AbelianGroup.axioms A & Ring_of_AbelianGroup.axioms A }.
+HB.structure Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
 
 Declare Scope hb_scope.
 Delimit Scope hb_scope with G.
@@ -97,7 +97,7 @@ Notation "x - y" := (x + - y) : hb_scope.
 Lemma addrN {R : AbelianGroup.type} : right_inverse (zero : R) opp add.
 Proof. by move=>x; rewrite addrC addNr. Qed.
 
-HB.factory Record Ring_of_Monoid A of Monoid.axioms A := {
+HB.factory Record Ring_of_Monoid A of Monoid A := {
   one : A;
   opp : A -> A;
   mul : A -> A -> A;
@@ -110,7 +110,7 @@ HB.factory Record Ring_of_Monoid A of Monoid.axioms A := {
   mulrDr : right_distributive mul add;
 }.
 
-HB.builders Context A (f : Ring_of_Monoid.axioms A).
+HB.builders Context A (f : Ring_of_Monoid A).
 
   Lemma addrC : commutative (add : A -> A -> A).
   Proof.
@@ -127,11 +127,11 @@ HB.builders Context A (f : Ring_of_Monoid.axioms A).
   Qed.
 
   Definition to_AbelianGroup_of_Monoid :=
-    AbelianGroup_of_Monoid.Axioms A opp_f addrC addNr_f.
+    AbelianGroup_of_Monoid.Build A opp_f addrC addNr_f.
   HB.instance A to_AbelianGroup_of_Monoid.
 
   Definition to_Ring_of_AbelianGroup :=
-    Ring_of_AbelianGroup.Axioms A one_f mul_f
+    Ring_of_AbelianGroup.Build A one_f mul_f
       mulrA_f mul1r_f mulr1_f mulrDl_f mulrDr_f.
   HB.instance A to_Ring_of_AbelianGroup.
 
@@ -148,16 +148,16 @@ HB.mixin Record Monoid_of_Type A := {
   add0r : left_id zero add;
   addr0 : right_id zero add;
 }.
-HB.structure Definition Monoid := { A of Monoid_of_Type.axioms A }.
+HB.structure Definition Monoid := { A of Monoid_of_Type A }.
 
-HB.mixin Record AbelianGroup_of_Monoid A of Monoid.axioms A := {
+HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
   opp : A -> A;
   addrC : commutative (add : A -> A -> A);
   addNr : left_inverse zero opp add;
 }.
-HB.structure Definition AbelianGroup := { A of Monoid.axioms A & AbelianGroup_of_Monoid.axioms A }.
+HB.structure Definition AbelianGroup := { A of Monoid A & AbelianGroup_of_Monoid A }.
 
-HB.mixin Record SemiRing_of_Monoid A of Monoid.axioms A := {
+HB.mixin Record SemiRing_of_Monoid A of Monoid A := {
   one : A;
   mul : A -> A -> A;
   mulrA : associative mul;
@@ -168,7 +168,7 @@ HB.mixin Record SemiRing_of_Monoid A of Monoid.axioms A := {
   mul0r : left_zero zero mul;
   mulr0 : right_zero zero mul;
 }.
-HB.structure Definition SemiRing := { A of Monoid.axioms A & SemiRing_of_Monoid.axioms A }.
+HB.structure Definition SemiRing := { A of Monoid A & SemiRing_of_Monoid A }.
 
 Declare Scope hb_scope.
 Delimit Scope hb_scope with G.
@@ -183,7 +183,7 @@ Notation "x - y" := (x + - y) : hb_scope.
 Lemma addrN {R : AbelianGroup.type} : right_inverse (zero : R) opp add.
 Proof. by move=>x; rewrite addrC addNr. Qed.
 
-HB.factory Record Ring_of_AbelianGroup A of AbelianGroup.axioms A := {
+HB.factory Record Ring_of_AbelianGroup A of AbelianGroup A := {
   one : A;
   mul : A -> A -> A;
   mulrA : associative mul;
@@ -193,7 +193,7 @@ HB.factory Record Ring_of_AbelianGroup A of AbelianGroup.axioms A := {
   mulrDr : right_distributive mul add;
 }.
 
-HB.builders Context (A : Type) (f : Ring_of_AbelianGroup.axioms A).
+HB.builders Context (A : Type) (f : Ring_of_AbelianGroup A).
 
   Fact mul0r : left_zero zero mul_f.
   Proof.
@@ -209,15 +209,15 @@ HB.builders Context (A : Type) (f : Ring_of_AbelianGroup.axioms A).
   by rewrite -mulrDr_f add0r addrC addNr.
   Qed.
 
-  Definition to_SemiRing_of_Monoid := SemiRing_of_Monoid.Axioms A
+  Definition to_SemiRing_of_Monoid := SemiRing_of_Monoid.Build A
     _ mul_f mulrA_f mul1r_f mulr1_f
     mulrDl_f mulrDr_f mul0r mulr0.
   HB.instance A to_SemiRing_of_Monoid.
 
 HB.end.
-HB.structure Definition Ring := { A of AbelianGroup.axioms A & Ring_of_AbelianGroup.axioms A }.
+HB.structure Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
 
-HB.factory Record Ring_of_Monoid A of Monoid.axioms A := {
+HB.factory Record Ring_of_Monoid A of Monoid A := {
   one : A;
   opp : A -> A;
   mul : A -> A -> A;
@@ -230,7 +230,7 @@ HB.factory Record Ring_of_Monoid A of Monoid.axioms A := {
   mulrDr : right_distributive mul add;
 }.
 
-HB.builders Context (A : Type) (f : Ring_of_Monoid.axioms A).
+HB.builders Context (A : Type) (f : Ring_of_Monoid A).
 
   Lemma addrC : commutative (add : A -> A -> A).
   Proof.
@@ -247,11 +247,11 @@ HB.builders Context (A : Type) (f : Ring_of_Monoid.axioms A).
   Qed.
 
   Definition to_AbelianGroup_of_Monoid :=
-    AbelianGroup_of_Monoid.Axioms A opp_f addrC addNr_f.
+    AbelianGroup_of_Monoid.Build A opp_f addrC addNr_f.
   HB.instance A to_AbelianGroup_of_Monoid.
 
   Definition to_Ring_of_AbelianGroup :=
-    Ring_of_AbelianGroup.Axioms A one_f mul_f
+    Ring_of_AbelianGroup.Build A one_f mul_f
       mulrA_f mul1r_f mulr1_f mulrDl_f mulrDr_f.
   HB.instance A to_Ring_of_AbelianGroup.
 
@@ -261,13 +261,13 @@ End V4.
 
 Import V3. (* V1, V3 and V4, they all work! *)
 
-Definition Z_monoid_axioms : Monoid_of_Type.axioms Z :=
-  Monoid_of_Type.Axioms Z 0%Z Z.add Z.add_assoc Z.add_0_l Z.add_0_r.
+Definition Z_monoid_axioms : Monoid_of_Type Z :=
+  Monoid_of_Type.Build Z 0%Z Z.add Z.add_assoc Z.add_0_l Z.add_0_r.
 
 HB.instance Z Z_monoid_axioms.
 
-Definition Z_ring_axioms : Ring_of_Monoid.axioms Z :=
-  Ring_of_Monoid.Axioms Z 1%Z Z.opp Z.mul
+Definition Z_ring_axioms : Ring_of_Monoid Z :=
+  Ring_of_Monoid.Build Z 1%Z Z.opp Z.mul
     Z.add_opp_diag_l Z.add_opp_diag_r
     Z.mul_assoc Z.mul_1_l Z.mul_1_r
     Z.mul_add_distr_r Z.mul_add_distr_l.

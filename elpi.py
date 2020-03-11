@@ -161,7 +161,7 @@ class CoqElpiLexer(RegexLexer):
     # 'raise', 'rec', 'sig', 'struct', 'then', 'to', 'true', 'try',
     # 'type', 'val', 'virtual', 'when', 'while', 'with'
     keyopts = (
-        '!=', '#', '&', '&&', r'\(', r'\)', r'\*', r'\+', ',', '-', r'-\.',
+        '!=', '#', '&&', r'\(', r'\)', r'\*', r'\+', ',', '-', r'-\.',
         '->', r'\.', r'\.\.', ':', '::', ':=', ':>', ';', ';;', '<', '<-',
         '<->', '=', '>', '>]', r'>\}', r'\?', r'\?\?', r'\[', r'\[<', r'\[>',
         r'\[\|', ']', '_', '`', r'\{', r'\{<', r'\|', r'\|]', r'\}', '~', '=>',
@@ -186,6 +186,7 @@ class CoqElpiLexer(RegexLexer):
             (words(keywords5, prefix=r'\b', suffix=r'\b'), Keyword.Pseudo),
             (words(keywords6, prefix=r'\b', suffix=r'\b'), Keyword.Reserved),
             # (r'\b([A-Z][\w\']*)(\.)', Name.Namespace, 'dotted'),
+            (r'&', Keyword),
             (r'\b([A-Z][\w\']*)', Name),
             (r'(%s)' % '|'.join(keyopts[::-1]), Operator),
             (r'(%s|%s)?%s' % (infix_syms, prefix_syms, operators), Operator),
