@@ -1,82 +1,124 @@
-Here the message I propose, it is ~600 words so there is space if you
-want to write more:
+﻿Dear PC members, first of all we would like to thank the reviewers for their
+valuable feedback. We believe we will be able to address all their requests for
+the final version, namely clarify the exposition in sections 4 and 5 (as per
+review 1 and 2), and add a few extra details in section 6 (as per review 2).
 
-Dear PC members, first of all we would like to thank the reviewers for
-their valuable feedback. We believe we will be able to address all
-their requests for the final version, namely clarify the exposition in
-sections 4 and 5 (as per review 1 and 2), and add a few extra details
-in section 6 (as per review 2).
 
-Specific answer to reviewer 1
+Answer to reviewer 1
 -----------------------------
 
-- p4-5, evolution of the hierarchy:
-     Could you make clearer the distinction (or absence of) between
-     axioms and theorems in your implementation of a theory (problem
-     mentioned on line 121). I.e., does it matter or not for the user
-     of the hierarchy.
 
-It does not matter: addrN is name he can use in her proofs. What
-changed is how it is "implemented" by the hierarchy designer. Line
-121 is very much related to the remark at lines 421-425, we shall
-hint that in section 2 as well.
+- p4-5, evolution of the hierarchy:
+         Could you make clearer the distinction (or absence of) between
+         axioms and theorems in your implementation of a theory (problem
+         mentioned on line 121). I.e., does it matter or not for the user
+         of the hierarchy.
+
+
+There are two distinct use cases for a hierarchy:
+1. one assumes a structure as
+     an hypothesis. In this case, all its axioms are theorems so the distinction
+     axiom-theorem does not matter.
+2. one instantiates a structure on a concrete
+     type in order to access all its theory. Here, however, one must pick an
+     axiomatic (i.e. a set of axioms) to show Coq that some type is indeed an
+     instance of a structure. If for each structure there is only one axiomatic
+     (which is its internal representation) and if we keep changing it, some theorems
+     may become axioms and increase the burden on the user (this is what happens with
+     addrC in V2, in order to instantiate a ring one has to prove it, while it was
+     not required in V1). We fix that by letting the designer provide as many
+     axiomatics as she wants, so that the user can pick the most convenient one, in
+     particular V3 also provides the axiomatic from V1 as a factory. Behind the
+     scenes, hierarchy-builder compiles it to the axiomatic currently used as the
+     internal representation (made of mixins).
+
+We plan to integrate a variation of the text above as the transition from
+section 2.1 to 2.2.
+
 
 - Propositions 5 and 8: there is no proof, but is there anything to
-prove?
+Prove?
 
-We agree that 5 is a remark. On the contrary 8 shows M \subset F
-by providing an implementation of requires, provides and from.
-This proposition identifies *factories* as the central notion of HB,
-since mixins are just a special case. Trivia: in an early draft the
-name of the language was, indeed, Factory.
+
+Albeit trivial, they are both theorems. Our mistake was to mix the proof with
+the statement.
+
+Proposition 5) dep represents a transitively closed DAG, in particular
+  dep*(dep*(M)) ⊆ dep*(M).
+Proof.
+dep is transitively closed since records are well typed in the empty context.
+dep describes a DAG since Coq does not admit circular definitions.
+Qed.
+
+Proposition 8) There is a way to see mixins as factories (M ⊆  F).
+Proof.
+For each m ∈ M we pose
+* requires(m) = dep(m)
+* provides(m) = {m}
+* from (m, m) = fun T (p : m T p σ ) (x : m T p 1 . . . p n ) => x ∈ B
+Qed.
+
+
+This proposition identifies *factories* as the central notion of HB, since
+mixins are just a special case. Trivia: in an early draft the name of the
+language was, indeed, Factory.
 
 - Section 4:
-     What are you describing here?
-     Is it the code your tool generate?
-     Does it correspond (exactly) to examples in Section 2?
-     Has anything been omitted?
+         What are you describing here?
+         Is it the code your tool generates?
+         Does it correspond (exactly) to examples in Section 2?
+         Has anything been omitted?
 
-4.1 show Coq code that is equivalent to the HB commands issued
-in Section 2.
-HB commands do not synthesize that text, but have the same effect.
 
-Many details were omitted. For example the abbreviations mentioned in
-section 3.3 are not there. Another omission is that all "exported"
-notions are gathered into an inner module, eg Monoid.Exports, etc.
-We believe these details are not very interesting, but we will clarify
-the status of the Coq code in section 4.
+Section 4.1 shows Coq code that is equivalent to the HB commands given in
+Section 2. These commands do not synthesize that text, but have the same effect.
 
-General answer to all reviewers
+Many details were omitted:
+* the abbreviations mentioned in section 3.3
+* the declarations of canonical structures are postponed to 4.3
+* "Exported" notions are gathered into an inner module, eg Monoid.Exports.
+
+
+We believe these details are not very interesting, but we will clarify the
+status of the Coq code in section 4 in the final version.
+
+
+Comment to all reviewers
 -------------------------------
-All reviewers acknowledge that HB looks useful. Reviewer 1 flatters
-us with "the tool is invaluable" and acknowledges that a contribution
-of HB is "providing a way for normal Coq users to write hierarchies
-using the packed class discipline". Reviewer 2 finds it "promising".
-Reviewer 3 finds the machinery "impressive".
 
-The main critic to HB, by Reviewer 3, is that it looks not only
-impressive,
-but also intimidating and Reviewer 3 wonders if a Coq user would run
-the
-risk of depending on HB in his work.
 
-We use the remaining space to comment on that, that we believe is a
-very pertinent remark.
+We could not avoid to remark that, by lack of clarity on our side, an important
+aspect of HB was not sufficiently put forward. Indeed two reviewers write
+seemingly opposite remarks:
 
-In an early prototype of HB we considered generating text (Coq source
-code).
-We believe this approach could let users take advantage of HB without
-depending on it (permanently). We do not provide this feature in the
-current code because, honestly, it is not the most intriguing feature
-to
-implement or to describe in a paper.
 
-We shall consider that feature again in the future, as an extreme
-measure,
-if the software stack behind HB turns out to severely hinder its
-adoption.
-We hope Reviewer 1 is right in saying that even regular Coq users could
-be interested in using HB, and if the tool turns out to be popular its
-maintenance will be assured by its authors and the community of users,
-as it is the case for the Coq system or the Mathematical Components
-library.
+* Reviewer 1 : "The first [contribution], surprisingly little advertised, [is]
+     providing a way for normal Coq users to write hierarchies using the packed class
+     discipline"
+
+
+* Reviewer 3 :  “I can imagine a few experts using these tools to build
+     hierarchies, but I would not expect the average Coq user to invest time into
+     learning about them”.
+
+
+We agree sections 4 and 5 of the paper can look intimidating to a non Coq +
+Packed Classes expert, but these details are essentially the ones a user of HB
+does not need to understand in order to use the tool. Indeed, the implementation
+of HB takes care of these details and avoids most of the common mistakes one can
+hardly avoid when writing Packed Classes code by hand. In the final version of
+the paper, we intend to clarify this aspect in the introduction.
+
+
+Finally, It is true that the software stack is large and may discourage the
+adoption of HB, as remarked by Reviewer 3. In an early prototype of HB we
+considered generating text (Coq source code). We believe this approach could let
+users take advantage of HB without depending on it (permanently). We do not
+provide this feature in the current code base because, honestly, it is not the
+most intriguing feature to implement or to describe in a paper. We shall
+consider that feature again in the future, as an extreme measure, if the
+software stack behind HB turns out to severely hinder its adoption. However, we
+hope Reviewer 1 is right in saying that the tool is invaluable, and if the tool
+turns out to be popular its maintenance will be assured by its authors and the
+community of users, as it is the case for the Coq system or the Mathematical
+Components library.
