@@ -4,44 +4,39 @@ the final version, namely clarify the exposition in sections 4 and 5 (as per
 review 1 and 2), and add a few extra details in section 6 (as per review 2).
 
 
-Answer to reviewer 1
------------------------------
+*Answer to reviewer 1*
 
-
-- p4-5, evolution of the hierarchy:
-         Could you make clearer the distinction (or absence of) between
-         axioms and theorems in your implementation of a theory (problem
-         mentioned on line 121). I.e., does it matter or not for the user
-         of the hierarchy.
-
+- p4-5, evolution of the hierarchy: Could you make clearer the
+  distinction (or absence of) between axioms and theorems in your
+  implementation of a theory (problem mentioned on line 121). I.e.,
+  does it matter or not for the user of the hierarchy.
 
 There are two distinct use cases for a hierarchy:
-1. one assumes a structure as
-     an hypothesis. In this case, all its axioms are theorems so the distinction
-     axiom-theorem does not matter.
-2. one instantiates a structure on a concrete
-     type in order to access all its theory. Here, however, one must pick an
-     axiomatic (i.e. a set of axioms) to show Coq that some type is indeed an
-     instance of a structure. If for each structure there is only one axiomatic
-     (which is its internal representation) and if we keep changing it, some theorems
-     may become axioms and increase the burden on the user (this is what happens with
-     addrC in V2, in order to instantiate a ring one has to prove it, while it was
-     not required in V1). We fix that by letting the designer provide as many
-     axiomatics as she wants, so that the user can pick the most convenient one, in
-     particular V3 also provides the axiomatic from V1 as a factory. Behind the
-     scenes, hierarchy-builder compiles it to the axiomatic currently used as the
-     internal representation (made of mixins).
+1. one assumes a structure as an hypothesis. In this case, all its
+   axioms are theorems so the distinction axiom-theorem does not
+   matter.
+2. one instantiates a structure on a concrete type in order to access
+   all its theory. Here, however, one must pick an axiomatic (i.e. a
+   set of axioms) to show Coq that some type is indeed an instance of
+   a structure. If for each structure there is only one axiomatic
+   (which is its internal representation) and if we keep changing it
+   across versions, some theorems may become axioms and increase the
+   burden on the user (this is what happens with addrC, in order to
+   instantiate a ring in V2 one has to prove it, while it was not
+   required in V1). We fix that by letting the designer provide as
+   many axiomatics (i.e. factories) as she wants, so that the user can
+   pick the most convenient one, in particular V3 also provides the
+   axiomatic from V1. Behind the scenes, hierarchy-builder compiles it
+   to the axiomatic currently used as the internal representation
+   (made of mixins).
 
 We plan to integrate a variation of the text above as the transition from
 section 2.1 to 2.2.
 
-
-- Propositions 5 and 8: there is no proof, but is there anything to
-Prove?
-
+- Propositions 5 and 8: there is no proof, but is there anything to Prove?
 
 Albeit trivial, they are both theorems. Our mistake was to mix the proof with
-the statement.
+the statement. Here is the modification we will make:
 
 Proposition 5) dep represents a transitively closed DAG, in particular
   dep*(dep*(M)) ⊆ dep*(M).
@@ -58,49 +53,37 @@ For each m ∈ M we pose
 * from (m, m) = fun T (p : m T p σ ) (x : m T p 1 . . . p n ) => x ∈ B
 Qed.
 
+The latter proposition identifies *factories* as the central notion of
+HB, since mixins are just a special case. Trivia: in an early draft
+the name of the language was, indeed, Factory.
 
-This proposition identifies *factories* as the central notion of HB, since
-mixins are just a special case. Trivia: in an early draft the name of the
-language was, indeed, Factory.
+- Section 4: What are you describing here?  Is it the code your tool
+  generates?  Does it correspond (exactly) to examples in Section 2?
+  Has anything been omitted?
 
-- Section 4:
-         What are you describing here?
-         Is it the code your tool generates?
-         Does it correspond (exactly) to examples in Section 2?
-         Has anything been omitted?
-
-
-Section 4.1 shows Coq code that is equivalent to the HB commands given in
+Section 4.1 shows Coq code that is almost equivalent to the HB commands given in
 Section 2. These commands do not synthesize that text, but have the same effect.
 
 Many details were omitted:
-* the abbreviations mentioned in section 3.3
-* the declarations of canonical structures are postponed to 4.3
-* "Exported" notions are gathered into an inner module, eg Monoid.Exports.
+- the abbreviations mentioned in section 3.3
+- the declarations of canonical structures are postponed to 4.3
+- "Exported" notions are gathered into an inner module, e.g. Monoid.Exports.
 
-
-We believe these details are not very interesting, but we will clarify the
+We believe these details are not very interesting, and we will clarify the
 status of the Coq code in section 4 in the final version.
 
 
-Comment to all reviewers
--------------------------------
-
+*Comment to all reviewers*
 
 We could not avoid to remark that, by lack of clarity on our side, an important
 aspect of HB was not sufficiently put forward. Indeed two reviewers write
 seemingly opposite remarks:
-
-
-* Reviewer 1 : "The first [contribution], surprisingly little advertised, [is]
-     providing a way for normal Coq users to write hierarchies using the packed class
-     discipline"
-
-
-* Reviewer 3 :  “I can imagine a few experts using these tools to build
-     hierarchies, but I would not expect the average Coq user to invest time into
-     learning about them”.
-
+- Reviewer 1 : "The first [contribution], surprisingly little
+   advertised, [is] providing a way for normal Coq users to write
+   hierarchies using the packed class discipline"
+- Reviewer 3 : “I can imagine a few experts using these tools to build
+   hierarchies, but I would not expect the average Coq user to invest
+   time into learning about them”.
 
 We agree sections 4 and 5 of the paper can look intimidating to a non Coq +
 Packed Classes expert, but these details are essentially the ones a user of HB
@@ -108,7 +91,6 @@ does not need to understand in order to use the tool. Indeed, the implementation
 of HB takes care of these details and avoids most of the common mistakes one can
 hardly avoid when writing Packed Classes code by hand. In the final version of
 the paper, we intend to clarify this aspect in the introduction.
-
 
 Finally, It is true that the software stack is large and may discourage the
 adoption of HB, as remarked by Reviewer 3. In an early prototype of HB we
