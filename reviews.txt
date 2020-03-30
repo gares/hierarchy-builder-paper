@@ -1,0 +1,198 @@
+----------------------- REVIEW 1 ---------------------
+SUBMISSION: 23
+TITLE: Hierarchy Builder: algebraic hierarchies made easy in Coq with Elpi
+AUTHORS: Cyril Cohen, Kazuhiko Sakaguchi and Enrico Tassi
+
+----------- Overall evaluation -----------
+SCORE: 1 (weak accept)
+----- TEXT:
+This paper describes the language HB, for Hierarhy Builder, that is
+implemented as an add-on to Coq, and allows to design and evolve
+algebraic hierarchies inside a proof assistant. It supports multiple
+inheritance, and hierarchy evolution without breakage of user code. A
+mathematical description of the language is given, along with a
+description of the Elpi-based implementation, which compiles pieces of
+hierarchy description mixed with Coq code into canonical structures
+following the (flat) packed class discipline popularized by the
+mathematical components library.
+
+I believe this paper makes two contributions. The first one,
+surprisingly little advertised, is providing a way for normal Coq
+users to write hierarchies using the packed class discipline. While
+this discipline is recognized as the most robust way to write such
+hierarchies in Coq, in terms of stability and performance, it is also,
+as the authors put it, unwieldly to write without assistance.  The
+other one is a language design which allows to smoothly accomodate
+multiple inheritance and hierarchy evolution, and could be of interest
+to other theorem provers too.
+
+My assessment is that while the first contribution is easy to see
+through the examples provided, the second one is much harder to
+follow, as the explanations and formal definitions are not as helpful
+as one could expect. I do agree that hierarchy evolution is an
+important design goal, and it seems it has been achieved, but the
+technical details are hard to follow.
+
+Despite these shortcomings of presentation, I would still argue for
+acceptance, be it as a system description, as the tool is invaluable,
+and it is reasonably well described.
+
+Other comments to authors:
+
+p1, line 41-42,45:
+  You use citations as object, which is hard to read, especially if
+  they are just numbers.
+
+p3, line 102, 107, 142, ...
+  hb.canonical seems to be hb.instance in the code.
+  There are a few occurrences of that.
+
+p4, line 122: addrN -> addNr
+
+p4-5, evolution of the hierarchy:
+  Could you make clearer the distinction (or absence of) between
+  axioms and theorems in your implementation of a theory (problem
+  mentioned on line 121). I.e., does it matter or not for the user of
+  the hierarchy.
+
+p5, factory code and explanation:
+  I had a very hard time connecting the figure, the explanations, and
+  the code. Actually, while I roughly understand what the code is
+  supposed to do, I still do not understand what is shown in
+  Figure 1.
+
+Section 3:
+  The semi-mathematical definitions you introduce are hard to read,
+  and do not replace proper explanations. Couldn't you use grammars or
+  a form of typing/deduction rules?
+
+p7, line 196: which -> whose
+
+line 198: "an additional argument f, which we call a factory"
+  f returns a type, how can it be itself an argument?
+  Do you mean an argument of type f?
+  Couldn't you just say that a builder is a function that builds a
+  mixin from other mixins, rather than just describe its type.
+
+line 209:
+  Why include properties in the definition?
+  In particular property (3) is trivial, as it is exactly the
+  definition of provides.
+
+Propositions 5 and 8: there is no proof, but is there anything to
+prove?
+
+Section 4:
+  What are you describing here?
+  Is it the code your tool generate?
+  Does it correspond (exactly) to examples in Section 2?
+  Has anything been omitted?
+
+p10, line 301: semiringsas
+
+Section 5:
+  Elpi code is hard to read for beginners.
+  An essential aspect is HOAS, which could be described in more detail. 
+
+p13, line 383:
+  Where and how does binder mobility occur in the code that follows?
+  Apparently on line 11, but there is no explanation of why this amounts to
+  binder mobility.
+
+p14, line 415: "super set" -> superset
+line 416: provides -> provide
+
+Section 6:
+  It could be interesting to contrast the approach of packed classes with
+  type classes or inheritance on object oriented languages.
+  In particular, the fact tha, while any type has access to the
+  functions/lemmas defined on types it can be coerced to, the
+  functions/lemmas are themselves defined on individual types, means that
+  their names are handled in a nominal (i.e. two distinct lemmas may have
+  the same name, without problems of coherence).
+  (This is not a requirement for this paper, just if you want to analyse
+  more the power of HB)
+----------- Questions for Rebuttal -----------
+p4-5, evolution of the hierarchy:
+  Could you make clearer the distinction (or absence of) between
+  axioms and theorems in your implementation of a theory (problem
+  mentioned on line 121). I.e., does it matter or not for the user of
+  the hierarchy.
+
+Propositions 5 and 8: there is no proof, but is there anything to prove?
+
+Section 4:
+  What are you describing here?
+  Is it the code your tool generate?
+  Does it correspond (exactly) to examples in Section 2?
+  Has anything been omitted?
+----------- Reviewer's confidence -----------
+SCORE: 2 ((medium))
+
+
+----------------------- REVIEW 2 ---------------------
+SUBMISSION: 23
+TITLE: Hierarchy Builder: algebraic hierarchies made easy in Coq with Elpi
+AUTHORS: Cyril Cohen, Kazuhiko Sakaguchi and Enrico Tassi
+
+----------- Overall evaluation -----------
+SCORE: 2 (accept)
+----- TEXT:
+The paper describes Hierarchy Builder, an embedded language for defining
+algebraic structures in Coq. The main benefits of the language are
+
+- getting rid of tedious and error-prone boiler plate, abstracting away from
+  the low-level technical details of Coq, and
+- providing a robust mechanism for evolving a library without breaking user code
+
+The paper addresses an important problem in formal mathematics and the proposed
+solution looks promising and is well presented. The only thing missing is a
+larger case study. At the very least I would like to see a paragraph or two
+about the status of applying Hierarchy Builder to some real examples, like the
+Mathematical Components library. How much can you do (or have done) already
+now, and what requires extensions of HB (like the parameterisation over
+structures you mention in the conclusions).
+
+Overall I recommend this paper for publication.
+
+Minor things
+
+Section 4: Please explain (briefly) the difference between *flat* Packed
+Classes and the standard Packed Classes.
+
+p10 l288: consists [of] just one mixin
+p10 l301: of semirings[ ]as depicted
+p11 l315: takes [as] input a term
+p12 l336: Does HB generate AbelianGroup_to_Semiring automatically?
+p13 l377: backtra[c]king
+p14 l416: Language[-]wise they provide[] keywords
+p14 l424: replacing an axiom[] with a lemma
+----------- Questions for Rebuttal -----------
+No questions
+----------- Reviewer's confidence -----------
+SCORE: 3 ((high))
+
+
+----------------------- REVIEW 3 ---------------------
+SUBMISSION: 23
+TITLE: Hierarchy Builder: algebraic hierarchies made easy in Coq with Elpi
+AUTHORS: Cyril Cohen, Kazuhiko Sakaguchi and Enrico Tassi
+
+----------- Overall evaluation -----------
+SCORE: 1 (weak accept)
+----- TEXT:
+## Summary
+
+In formalization of mathematics with proof assistants, an important engineering question is how to organize hierarchies of mathematical structures. Sometimes there are multiple ways that a hierarchy could be organized, none of which is the best. As a large library develops, it is difficult to change the overall structure of its hierarchy of structures, which may lead to problems.
+
+In this paper the authors describe a specialized language HB whose purpose is to build and evolve such structures. The language HB works on top of Coq, and its implementation uses another specialized language, Elpi, which also interfaces with Coq. The end result is a hierarchy of Coq type classes that a user can then refer to in their development.
+
+## Assessment
+
+The machinery is impressive, at times a bit intimidating. I can imagine a few experts using these tools to build hierarchies, but I would not expect the average Coq user to invest time into learning about them. For instance, I would be worried about having several extra tools that my own development relies on, especially if they're of "academic quality". We should therefore understand the present paper as an exploration of design space, rather than a presentation of a finished tool that should be used "in production" (by people who are not the authors of the tool).
+
+On the other hand, I do not wish to underestimate the importance of having flexible ways of managing hierarchies of mathematical structures in a proof assistant. Past experience has taught us that design mistakes in the libraries can be quite costly, and that it is important to have the ability to adapt and modify the hierarchies.
+----------- Questions for Rebuttal -----------
+No questions.
+----------- Reviewer's confidence -----------
+SCORE: 2 ((medium))
