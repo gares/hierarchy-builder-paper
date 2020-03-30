@@ -1,0 +1,82 @@
+Here the message I propose, it is ~600 words so there is space if you
+want to write more:
+
+Dear PC members, first of all we would like to thank the reviewers for
+their valuable feedback. We believe we will be able to address all
+their requests for the final version, namely clarify the exposition in
+sections 4 and 5 (as per review 1 and 2), and add a few extra details
+in section 6 (as per review 2).
+
+Specific answer to reviewer 1
+-----------------------------
+
+- p4-5, evolution of the hierarchy:
+     Could you make clearer the distinction (or absence of) between
+     axioms and theorems in your implementation of a theory (problem
+     mentioned on line 121). I.e., does it matter or not for the user
+     of the hierarchy.
+
+It does not matter: addrN is name he can use in her proofs. What
+changed is how it is "implemented" by the hierarchy designer. Line
+121 is very much related to the remark at lines 421-425, we shall
+hint that in section 2 as well.
+
+- Propositions 5 and 8: there is no proof, but is there anything to
+prove?
+
+We agree that 5 is a remark. On the contrary 8 shows M \subset F
+by providing an implementation of requires, provides and from.
+This proposition identifies *factories* as the central notion of HB,
+since mixins are just a special case. Trivia: in an early draft the
+name of the language was, indeed, Factory.
+
+- Section 4:
+     What are you describing here?
+     Is it the code your tool generate?
+     Does it correspond (exactly) to examples in Section 2?
+     Has anything been omitted?
+
+4.1 show Coq code that is equivalent to the HB commands issued
+in Section 2.
+HB commands do not synthesize that text, but have the same effect.
+
+Many details were omitted. For example the abbreviations mentioned in
+section 3.3 are not there. Another omission is that all "exported"
+notions are gathered into an inner module, eg Monoid.Exports, etc.
+We believe these details are not very interesting, but we will clarify
+the status of the Coq code in section 4.
+
+General answer to all reviewers
+-------------------------------
+All reviewers acknowledge that HB looks useful. Reviewer 1 flatters
+us with "the tool is invaluable" and acknowledges that a contribution
+of HB is "providing a way for normal Coq users to write hierarchies
+using the packed class discipline". Reviewer 2 finds it "promising".
+Reviewer 3 finds the machinery "impressive".
+
+The main critic to HB, by Reviewer 3, is that it looks not only
+impressive,
+but also intimidating and Reviewer 3 wonders if a Coq user would run
+the
+risk of depending on HB in his work.
+
+We use the remaining space to comment on that, that we believe is a
+very pertinent remark.
+
+In an early prototype of HB we considered generating text (Coq source
+code).
+We believe this approach could let users take advantage of HB without
+depending on it (permanently). We do not provide this feature in the
+current code because, honestly, it is not the most intriguing feature
+to
+implement or to describe in a paper.
+
+We shall consider that feature again in the future, as an extreme
+measure,
+if the software stack behind HB turns out to severely hinder its
+adoption.
+We hope Reviewer 1 is right in saying that even regular Coq users could
+be interested in using HB, and if the tool turns out to be popular its
+maintenance will be assured by its authors and the community of users,
+as it is the case for the Coq system or the Mathematical Components
+library.
