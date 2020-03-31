@@ -6,10 +6,11 @@ review 1 and 2), and add a few extra details in section 6 (as per review 2).
 
 *Answer to reviewer 1*
 
-- p4-5, evolution of the hierarchy: Could you make clearer the
-  distinction (or absence of) between axioms and theorems in your
-  implementation of a theory (problem mentioned on line 121). I.e.,
-  does it matter or not for the user of the hierarchy.
+> p4-5, evolution of the hierarchy:
+> Could you make clearer the distinction (or absence of) between
+> axioms and theorems in your implementation of a theory (problem
+> mentioned on line 121). I.e., does it matter or not for the user of
+> the hierarchy.
 
 There are two distinct use cases for a hierarchy:
 1. one assumes a structure as an hypothesis. In this case, all its
@@ -33,7 +34,7 @@ There are two distinct use cases for a hierarchy:
 We plan to integrate a variation of the text above as the transition from
 section 2.1 to 2.2.
 
-- Propositions 5 and 8: there is no proof, but is there anything to Prove?
+> Propositions 5 and 8: there is no proof, but is there anything to Prove?
 
 Albeit trivial, they are both theorems. Our mistake was to mix the proof with
 the statement. Here is the modification we will make:
@@ -57,9 +58,11 @@ The latter proposition identifies *factories* as the central notion of
 HB, since mixins are just a special case. Trivia: in an early draft
 the name of the language was, indeed, Factory.
 
-- Section 4: What are you describing here?  Is it the code your tool
-  generates?  Does it correspond (exactly) to examples in Section 2?
-  Has anything been omitted?
+> Section 4:
+> What are you describing here?
+> Is it the code your tool generate?
+> Does it correspond (exactly) to examples in Section 2?
+> Has anything been omitted?
 
 Section 4.1 shows Coq code that is almost equivalent to the HB commands given in
 Section 2. These commands do not synthesize that text, but have the same effect.
