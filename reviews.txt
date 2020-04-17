@@ -43,11 +43,18 @@ p1, line 41-42,45:
   You use citations as object, which is hard to read, especially if
   they are just numbers.
 
+=ET= Change "in [13]" with "by Someone [13]"
+
 p3, line 102, 107, 142, ...
   hb.canonical seems to be hb.instance in the code.
   There are a few occurrences of that.
 
+=ET= Replace "hb.canonical" page 3 with "HB.instance"
+
 p4, line 122: addrN -> addNr
+
+=ET= "but rather a theorem of the122abstract theory of Abelian groups
+   proved at line XX"
 
 p4-5, evolution of the hierarchy:
   Could you make clearer the distinction (or absence of) between
@@ -55,18 +62,46 @@ p4-5, evolution of the hierarchy:
   mentioned on line 121). I.e., does it matter or not for the user of
   the hierarchy.
 
+=ET= insert between 2.1 and 2.2 some text inspired by
+    There are two distinct use cases for a hierarchy:
+    1. one assumes a structure as
+        an hypothesis. In this case, all its axioms are theorems so the distinction
+        axiom-theorem does not matter.
+    2. one instantiates a structure on a concrete
+        type in order to access all its theory. Here, however, one must pick an
+        axiomatic (i.e. a set of axioms) to show Coq that some type is indeed an
+        instance of a structure. If for each structure there is only one axiomatic
+        (which is its internal representation) and if we keep changing it, some theorems
+        may become axioms and increase the burden on the user (this is what happens with
+        addrC in V2, in order to instantiate a ring one has to prove it, while it was
+        not required in V1). We fix that by letting the designer provide as many
+        axiomatics as she wants, so that the user can pick the most convenient one, in
+        particular V3 also provides the axiomatic from V1 as a factory. Behind the
+        scenes, hierarchy-builder compiles it to the axiomatic currently used as the
+        internal representation (made of mixins).
+
 p5, factory code and explanation:
   I had a very hard time connecting the figure, the explanations, and
   the code. Actually, while I roughly understand what the code is
   supposed to do, I still do not understand what is shown in
   Figure 1.
 
+=ET= edit the figure and add the names of structures and builders
+
 Section 3:
   The semi-mathematical definitions you introduce are hard to read,
   and do not replace proper explanations. Couldn't you use grammars or
   a form of typing/deduction rules?
 
+=CC= ?
+
+   RecordDecl ::= "Record" Name "(" Name{0} ":" Term ")" Factory*
+   Factory ::= "(" Name{1} ":" Name{2} Name{0} Name{1}* ")"
+   Name{2} is a mixin
+
 p7, line 196: which -> whose
+
+=CC= fix
 
 line 198: "an additional argument f, which we call a factory"
   f returns a type, how can it be itself an argument?
@@ -74,13 +109,37 @@ line 198: "an additional argument f, which we call a factory"
   Couldn't you just say that a builder is a function that builds a
   mixin from other mixins, rather than just describe its type.
 
+=CC= clarify, the return type is not the one of f but the one of \mu
+=CC= "an additional argument (of type) f"
+=CC= turn definition 6 into 3 definitions
+
 line 209:
   Why include properties in the definition?
   In particular property (3) is trivial, as it is exactly the
   definition of provides.
 
+=CC= clarify what "is defined" means (recall from is a relation, not
+   necessarily a total one)
+
 Propositions 5 and 8: there is no proof, but is there anything to
 prove?
+
+=CC= rework as follows
+
+  Proposition 5) dep represents a transitively closed DAG, in particular
+    dep*(dep*(M)) ⊆ dep*(M).
+  Proof.
+  dep is transitively closed since records are well typed in the empty context.
+  dep describes a DAG since Coq does not admit circular definitions.
+  Qed.
+
+  Proposition 8) There is a way to see mixins as factories (M ⊆  F).
+  Proof.
+  For each m ∈ M we pose
+  * requires(m) = dep(m)
+  * provides(m) = {m}
+  * from (m, m) = fun T (p : m T p σ ) (x : m T p 1 . . . p n ) => x ∈ B
+  Qed.
 
 Section 4:
   What are you describing here?
@@ -88,19 +147,37 @@ Section 4:
   Does it correspond (exactly) to examples in Section 2?
   Has anything been omitted?
 
+=KS= clarify at the beginning of section 4
+  Section 4.1 shows Coq code that is equivalent to the HB commands given in
+  Section 2. These commands do not synthesize that text, but have the same effect.
+
+  Many details were omitted:
+  * the abbreviations mentioned in section 3.3
+  * the declarations of canonical structures are postponed to 4.3
+  * "Exported" notions are gathered into an inner module, eg Monoid.Exports.
+
 p10, line 301: semiringsas
+
+=KS= fix
 
 Section 5:
   Elpi code is hard to read for beginners.
   An essential aspect is HOAS, which could be described in more detail. 
+
+== see next
 
 p13, line 383:
   Where and how does binder mobility occur in the code that follows?
   Apparently on line 11, but there is no explanation of why this amounts to
   binder mobility.
 
+=ET= if we run out of space cut at "In this timple case...."
+   add a sentence saying that HOAS helps, => as well
+
 p14, line 415: "super set" -> superset
 line 416: provides -> provide
+
+=ET= fix
 
 Section 6:
   It could be interesting to contrast the approach of packed classes with
@@ -112,6 +189,9 @@ Section 6:
   the same name, without problems of coherence).
   (This is not a requirement for this paper, just if you want to analyse
   more the power of HB)
+
+== ?
+
 ----------- Questions for Rebuttal -----------
 p4-5, evolution of the hierarchy:
   Could you make clearer the distinction (or absence of) between
@@ -160,13 +240,29 @@ Minor things
 Section 4: Please explain (briefly) the difference between *flat* Packed
 Classes and the standard Packed Classes.
 
+=KS= add a sentence to page 10 after Module AbelianGroup describing the
+   "flat" variant of PC
+
 p10 l288: consists [of] just one mixin
 p10 l301: of semirings[ ]as depicted
 p11 l315: takes [as] input a term
+
+=KS= fix
+
 p12 l336: Does HB generate AbelianGroup_to_Semiring automatically?
 p13 l377: backtra[c]king
 p14 l416: Language[-]wise they provide[] keywords
 p14 l424: replacing an axiom[] with a lemma
+
+=ET= fix
+
+=KS= count how many structures(and instances) have no parameters in MC in
+   order to be able to reply to the question:
+     "How much can you do (or have done) already"
+   this guy may ask during the talk
+   Put a line in the conclusions to say how much we cover now, and that
+   we plan to cover 100% future work
+
 ----------- Questions for Rebuttal -----------
 No questions
 ----------- Reviewer's confidence -----------
