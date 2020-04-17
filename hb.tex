@@ -197,8 +197,11 @@ Theorem~\cite{DBLP:conf/itp/GonthierAABCGRMOBPRSTT13}.
 
 The hierarchy of the Mathematical Components library
 is implemented following the discipline of Packed Classes initially introduced
-in \cite{DBLP:conf/tphol/GarillotGMR09} and later also adopted in
-\cite{DBLP:conf/mpc/AffeldtNS19} and \cite{DBLP:journals/mics/BoldoLM15}.
+by Garillot, Gonthier, Mahboubi and Rideau~\cite{DBLP:conf/tphol/GarillotGMR09}
+and later also adopted by Affeldt, Nowak, and Saikawain
+to describe a hierarchy of monadic effects~\cite{DBLP:conf/mpc/AffeldtNS19}
+and by Boldo, Lelay, and Melquiond in the Coquelicot library of real
+analysis~\cite{DBLP:journals/mics/BoldoLM15}.
 We call Packed Classes a discipline, and not a language, because, in spite of
 its many virtues, it is unwieldy to use. In particular it leaks to the user
 many of the technical details of the Coq system. As a result, one
@@ -347,7 +350,7 @@ in order to build an instance of the \coq{Monoid}
 structure for binary integers \coq{Z}.
 We then register that monoid instance as the canonical one on \coq{Z}
 (line~\ref{demo:theory:z:monoid:canonical}) via the command
-\coq{hb.canonical}.
+\coq{HB.instance}.
 We can similarly declare that \coq{Z} forms a ring by using
 the \coq{Ring_of_Monoid.Build} \phantterm{}
 (lines~\ref{demo:theory:z:ring:axioms} and~\ref{demo:theory:z:ring:canonical}).
@@ -400,18 +403,35 @@ into a newborn \mixin{} \coq{AbelianGroup_of_Monoid} that gathers the
 axioms needed to turn a monoid into an Abelian group. Consequently the \mixin{}
 for rings is now called \coq{Ring_of_AbelianGroup} (instead of \coq{Ring_of_Monoid})
 since it expects the type \coq{A} to be already an Abelian group and hence
-gathers fewer axioms. \\
+gathers fewer axioms.
 While operations moved from one structure to another, some properties
 undergo a deep change in their status.
 The lemma \coq{addrC} part of the abstract theory of
 rings is now an axiom of Abelian groups, while \coq{addrN} is no more
 an axiom of rings, but rather a theorem of the abstract theory of Abelian
-groups.
+groups proved at line~\ref{demo2:proof:addrN}.
 
-With this new version of the hierarchy, that we name V2, code written
-for version V1 breaks. For example the declaration of the canonical ring over
-the integers fails, if only
-because we do not have a \coq{Ring_of_Monoid.Build} \phantterm{} anymore.
+It is worth clarifying here what axioms and lemmas are by looking at the
+two distinct use cases for a hierarchy: 1) develop the abstract theory of some
+structure; 2) apply the abstract theory on some concrete example.
+In the first case
+all the axioms of the structure are (assumed to be) theorems so the distinction
+between axiom and theorem does not matter. This is what happens
+in the proof of \coq{addNr} by taking \coq{R} to be of type
+\coq{AbelianGroup.type} as an assumption.
+In the second case,
+in order to show Coq that a data type and some operations for a structure,
+one must pick the axioms of the structure an prove them for that specific
+type and operations. For example the \coq{Ring_of_Monoid.Build} \phantterm{}
+is used at page~\pageref{demo:theory:z:ring:axioms} to package the set
+of proofs that make \coq{Z} a ring (proviso \coq{Z} is already a monoid).
+
+With this new version of the hierarchy, that we name V2, the axiomatic that
+was previously exposed to user changed, and indeed
+code written for version V1 breaks. For example the declaration of the
+canonical ring over the integers fails, if only
+because we do not have a \coq{Ring_of_Monoid.Build} \phantterm{}
+anymore.
 
 Our objective is to obtain a version of the hierarchy, that we name V3, that does
 not only feature Abelian groups but that is also backward compatible
@@ -421,7 +441,7 @@ with V1.
 
 \begin{figure}[!h]
   \begin{center}
-    \includegraphics[width=0.8\textwidth]{puzzle.pdf}
+    \includegraphics[width=\textwidth]{puzzle.pdf}
   \end{center}
   \caption{\label{fig:puzzle}The evolution of the hierarchy. V3 is backward compatible with V1, while V2 is not.}
 \end{figure}
@@ -883,22 +903,23 @@ section~\ref{subsec:v3} with the structure of semirings%, which is another
 as depicted in figure \ref{fig:puzzle_v4}. Semirings introduce the binary
 multiplication operator \coq{mul} and its identity element \coq{one}.
 
-\begin{wrapfigure}[3]{r}{.4\textwidth}
- \includegraphics[width=.4\textwidth]{v4.pdf}
- \caption{V4 introduces multiple inheritance. For brevity we omit the factories/builders for the upper arrows.}
- \label{fig:puzzle_v4}
-\end{wrapfigure}
-\
 \begin{coqcode}
-#\hbmixin{}# Record SemiRing_of_Monoid A 
-    of Monoid A := {
+#\hbmixin{}# Record SemiRing_of_Monoid A of Monoid A := {
   one : A;
   mul : A -> A -> A;
   (* 7 axioms are omitted. *)
 }.
+\end{coqcode}
 
+\begin{wrapfigure}[3]{r}{.4\textwidth}
+  \includegraphics[width=.4\textwidth]{v4.pdf}
+  \caption{V4 introduces multiple inheritance. For brevity we omit the factories/builders for the upper arrows.}
+  \label{fig:puzzle_v4}
+\end{wrapfigure}
+\
+\begin{coqcode}
 #\hbfactory{}# Record Ring_of_AbelianGroup A
-    of AbelianGroup A := {
+  of AbelianGroup A := {
   (* 2 operators and 5 axioms are omitted. *)
 }.
 #\hbbuilders{}# Context A (a : Ring_of_AbelianGroup A).
@@ -906,13 +927,17 @@ multiplication operator \coq{mul} and its identity element \coq{one}.
 #\hbend{}#.
 \end{coqcode}
 
+
 Since semirings and Abelian groups do not inherit from each other,
 the definition of semirings and Abelian groups are quite similar:
 \begin{coqcode}
 Module SemiRing.
 Record axioms (T : Type) : Type := Class {
-  Monoid_of_Type_mixin : Monoid_of_Type T;
-  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid T Monoid_of_Type_mixin; }.
+  Monoid_of_Type_mixin :
+    Monoid_of_Type T;
+  SemiRing_of_Monoid_mixin :
+    SemiRing_of_Monoid T Monoid_of_Type_mixin;
+}.
 Structure type : Type := Pack { sort : Type; class : axioms sort; }.
 End SemiRing.
 \end{coqcode}
@@ -1110,7 +1135,7 @@ one use the syntax of Coq to write an Elpi expression of type \elpi{term}.
 The API \elpi{coq.CS.canonical-projections} lets us find the projections
 automatically generated by Coq for a given record.
 The last detail worth mentioning is that this program makes no use of
-backtraking: the \elpi{std.do!} combinator signals that.
+backtracking: the \elpi{std.do!} combinator signals that.
 
 In the simple case of the structure record, the number of fields, and hence
 the number of binders, is fixed. On the contrary the class record has one
@@ -1232,8 +1257,8 @@ They do not describe any actual compilation to the language of a mainstream
 interactive prover, indeed they claim their language to be mostly type theory
 independent. We know they considered targeting type theory and the language
 of unification hints~\cite{10.1007/978-3-642-03359-9_8}
-(a super set of the one of Canonical Structures),
-but we could not find any written trace of that. Language wise they provides
+(a superset of the one of Canonical Structures),
+but we could not find any written trace of that. Language-wise they provide
 keywords such as \verb+combine+ and \verb+over+ to share (reuse) a property
 when defining a new structure. For example in order to avoid restating
 the commutativity property when defining Abelian groups they combine
@@ -1243,7 +1268,7 @@ In our language \HB{} the same role is played by \emph{\mixins{}}.
 A \mixin{} lets one write once and for all a property and abstract it over types
 and operations so that it can be reused in all the structures that need it.
 One operation \HB{} allows for but that does not seem to be possible in the
-setting of Presentation Combinators is the one of replacing an axioms with a
+setting of Presentation Combinators is the one of replacing an axiom with a
 lemma and vice versa. As shown in \autoref{subsec:evolution} \HB{} supports
 that.
 

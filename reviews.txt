@@ -43,17 +43,17 @@ p1, line 41-42,45:
   You use citations as object, which is hard to read, especially if
   they are just numbers.
 
-=ET= Change "in [13]" with "by Someone [13]"
+=DONE= Change "in [13]" with "by Someone [13]"
 
 p3, line 102, 107, 142, ...
   hb.canonical seems to be hb.instance in the code.
   There are a few occurrences of that.
 
-=ET= Replace "hb.canonical" page 3 with "HB.instance"
+=DONE= Replace "hb.canonical" page 3 with "HB.instance"
 
 p4, line 122: addrN -> addNr
 
-=ET= "but rather a theorem of the122abstract theory of Abelian groups
+=DONE= "but rather a theorem of the122abstract theory of Abelian groups
    proved at line XX"
 
 p4-5, evolution of the hierarchy:
@@ -62,7 +62,7 @@ p4-5, evolution of the hierarchy:
   mentioned on line 121). I.e., does it matter or not for the user of
   the hierarchy.
 
-=ET= insert between 2.1 and 2.2 some text inspired by
+=DONE= insert between 2.1 and 2.2 some text inspired by
     There are two distinct use cases for a hierarchy:
     1. one assumes a structure as
         an hypothesis. In this case, all its axioms are theorems so the distinction
@@ -86,7 +86,7 @@ p5, factory code and explanation:
   supposed to do, I still do not understand what is shown in
   Figure 1.
 
-=ET= edit the figure and add the names of structures and builders
+=DONE= edit the figure and add the names of structures and builders
 
 Section 3:
   The semi-mathematical definitions you introduce are hard to read,
@@ -177,7 +177,7 @@ p13, line 383:
 p14, line 415: "super set" -> superset
 line 416: provides -> provide
 
-=ET= fix
+=DONE= fix
 
 Section 6:
   It could be interesting to contrast the approach of packed classes with
@@ -246,15 +246,15 @@ Classes and the standard Packed Classes.
 p10 l288: consists [of] just one mixin
 p10 l301: of semirings[ ]as depicted
 p11 l315: takes [as] input a term
+p12 l336: Does HB generate AbelianGroup_to_Semiring automatically?
 
 =KS= fix
 
-p12 l336: Does HB generate AbelianGroup_to_Semiring automatically?
 p13 l377: backtra[c]king
 p14 l416: Language[-]wise they provide[] keywords
 p14 l424: replacing an axiom[] with a lemma
 
-=ET= fix
+=DONE= fix
 
 =KS= count how many structures(and instances) have no parameters in MC in
    order to be able to reply to the question:
