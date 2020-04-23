@@ -117,7 +117,15 @@ class CoqElpiLexer(RegexLexer):
         'Qed', 'Defined', 'Hint', 'Resolve', 'Rewrite', 'View', 'Search',
         'Show', 'Print', 'Printing', 'All', 'Graph', 'Projections', 'inside',
         'outside', 'Check', 'Global', 'Instance', 'Existing',
-        'Universe', 'Polymorphic', 'Monomorphic', 'Context', 'Elpi', 'Accumulate', 'Db', 'Command'
+        'Universe', 'Polymorphic', 'Monomorphic', 'Context', 'Elpi',
+        'Accumulate', 'Db', 'Command', 'Infix', )
+    hb = (
+        'HB.mixin',
+        'HB.factory',
+        'HB.instance',
+        'HB.structure',
+        'HB.builders',
+        'HB.end',
     )
     keywords2 = (
         # Gallina
@@ -185,6 +193,7 @@ class CoqElpiLexer(RegexLexer):
             (words(keywords4, prefix=r'\b', suffix=r'\b'), Keyword),
             (words(keywords5, prefix=r'\b', suffix=r'\b'), Keyword.Pseudo),
             (words(keywords6, prefix=r'\b', suffix=r'\b'), Keyword.Reserved),
+            (words(hb, prefix=r'\b', suffix=r'\b'), Name.Class),
             # (r'\b([A-Z][\w\']*)(\.)', Name.Namespace, 'dotted'),
             (r'&', Keyword),
             (r'\b([A-Z][\w\']*)', Name),
