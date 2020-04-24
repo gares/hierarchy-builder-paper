@@ -147,7 +147,7 @@ Section 4:
   Does it correspond (exactly) to examples in Section 2?
   Has anything been omitted?
 
-=KS= clarify at the beginning of section 4
+=DONE= clarify at the beginning of section 4
   Section 4.1 shows Coq code that is equivalent to the HB commands given in
   Section 2. These commands do not synthesize that text, but have the same effect.
 
@@ -158,7 +158,7 @@ Section 4:
 
 p10, line 301: semiringsas
 
-=KS= fix
+=DONE= fix
 
 Section 5:
   Elpi code is hard to read for beginners.
@@ -248,7 +248,7 @@ p10 l301: of semirings[ ]as depicted
 p11 l315: takes [as] input a term
 p12 l336: Does HB generate AbelianGroup_to_Semiring automatically?
 
-=KS= fix
+=DONE= fix
 
 p13 l377: backtra[c]king
 p14 l416: Language[-]wise they provide[] keywords
@@ -256,12 +256,14 @@ p14 l424: replacing an axiom[] with a lemma
 
 =DONE= fix
 
-=KS= count how many structures(and instances) have no parameters in MC in
+=DONE= count how many structures(and instances) have no parameters in MC in
    order to be able to reply to the question:
      "How much can you do (or have done) already"
    this guy may ask during the talk
    Put a line in the conclusions to say how much we cover now, and that
    we plan to cover 100% future work
+
+   see `count_noparam.v`.
 
 ----------- Questions for Rebuttal -----------
 No questions
