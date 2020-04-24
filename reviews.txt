@@ -101,7 +101,7 @@ Section 3:
 
 p7, line 196: which -> whose
 
-=CC= fix
+=DONE= fix
 
 line 198: "an additional argument f, which we call a factory"
   f returns a type, how can it be itself an argument?
@@ -109,22 +109,22 @@ line 198: "an additional argument f, which we call a factory"
   Couldn't you just say that a builder is a function that builds a
   mixin from other mixins, rather than just describe its type.
 
-=CC= clarify, the return type is not the one of f but the one of \mu
-=CC= "an additional argument (of type) f"
-=CC= turn definition 6 into 3 definitions
+=DONE= clarify, the return type is not the one of f but the one of \mu
+=DONE= "an additional argument (of type) f"
+=DONE= turn definition 6 into 3 definitions
 
 line 209:
   Why include properties in the definition?
   In particular property (3) is trivial, as it is exactly the
   definition of provides.
 
-=CC= clarify what "is defined" means (recall from is a relation, not
+=DONE= clarify what "is defined" means (recall from is a relation, not
    necessarily a total one)
 
 Propositions 5 and 8: there is no proof, but is there anything to
 prove?
 
-=CC= rework as follows
+=DONE= rework as follows
 
   Proposition 5) dep represents a transitively closed DAG, in particular
     dep*(dep*(M)) ⊆ dep*(M).

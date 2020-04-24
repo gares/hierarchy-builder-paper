@@ -147,6 +147,11 @@
 \theoremstyle{command}
 \newtheorem*{command}{Coq command}
 
+\newtheoremstyle{commands}{\topsep}{\topsep}{}{0pt}{\sffamily\bfseries}{ }{5pt plus 1pt minus 1pt}%
+{$\blacktriangleright$ \thmname{#1} {\coq{#3}}}
+\theoremstyle{commands}
+\newtheorem*{commands}{Coq commands}
+
 \begin{document}
 
 \maketitle
@@ -566,17 +571,22 @@ their implementation, neither should they rely on explicit builders.
 \subsection{\HB{} \mixins{}, \factories{} and instances}
 \label{sec:hb-mixins-factories}
 
+In this section, we call ``distinguished'' a Coq definition or record
+that the developer of a library has labeled ``\mixin{}'', ``\factory{}'',
+``\mixinbuilder{}'', ``\class{}'' or ``\structure{}''.
+
 \begin{definition}[\M{}, \mixins{}]
-A \emph{\mixin{}} \(m \in \M{}\) is a Coq record with one or more parameters.
-The first parameter must be a \coq{(T : Type)}, while the other parameters
-are \mixins{} applied to \coq{T} and possibly $n$ other distinct \mixins{}. I.e.
+  A \emph{\mixin{}} \(m \in \M{}\) is a distinguished Coq record with one or more
+  parameters.  The first parameter must be a \coq{(T : Type)}, while
+  the other parameters are \mixins{} \(\left(m_i\right)_{i \in \enum1n}\), each of which
+  is applied to \coq{T} and possibly previous mixin variables. I.e.
 \begin{coqcode}
 Record #$m$# (T : Type) #\(\pmp{n}\)# : Type := { .. }.
 \end{coqcode}
-where \(\pmp{n} = \vect{\left(p_i : m_i\ T\ p_{\sigma(i,1)}\ \ldots\ p_{\sigma(i,n_i)}\right)}_{i \in \enum1n}\).
-For all \(i \in \enum1n\) we have \(m_i \in \M{}\) and its
-arguments consist in $n_i$ of the previously quantified
-mixin parameters $p_k$, i.e. for all \(k \in \enum1{n_i}\), we
+where \(\pmp{n} = (p_1 : m_1\ T) \ldots \left(p_n : m_n\ T\ p_{\sigma(n,1)}\ \ldots\ p_{\sigma(n,q_n)}\right)\)
+and where for all \(i~\in~\enum1n\) we have \(q_i \in \mathbb{N}\) and the
+arguments of \(m_i \in \M{}\) consist in $q_i$ of the previously quantified
+mixin parameters $p_k$, i.e. for all \(k \in \enum1{q_i}\), we
 have \(\sigma(i,k) \in \enum1{i-1}\).
 \end{definition}
 
@@ -587,7 +597,7 @@ have \(\sigma(i,k) \in \enum1{i-1}\).
 \end{definition}
 
 \begin{remark}For all \(i \in \enum1n\), we have
-\(\dep{}(m_i) = \enum{m_{\sigma(i,1)}}{m_{\sigma(i,m_i)}}\).
+  \(\dep{}(m_i) = \enum{m_{\sigma(i,1)}}{m_{\sigma(i,q_i)}}\).
 \end{remark}
 
 \begin{definition}If \(f : \mathcal{X} \to \powerset{\mathcal{Y}}\), then
@@ -595,86 +605,108 @@ have \(\sigma(i,k) \in \enum1{i-1}\).
 \(f^\star(X) = \bigcup_{x \in X} f(x).\)
 \end{definition}
 
-\begin{proposition}
-\dep{} is transitively closed since records are well typed in the
-empty context and describes a DAG since Coq does not admit circular
-definitions: \(\dep{}^\star(\dep{}^\star(M)) \subseteq \dep{}^\star(M)\)
+\begin{proposition}[\dep{} is transitively closed and describes a DAG]
+  \[\forall m \in \M{}, \qquad \dep{}^\star(\dep{}^\star(m)) \subseteq
+  \dep{}^\star(m) \quad \textrm{and} \quad m \notin \dep{}(m).\]
 \end{proposition}
+\begin{proof}
+  Indeed \dep{} is transitively closed because records are well typed
+  in the empty context and describes a DAG since Coq does not admit
+  circular definitions.
+\end{proof}
 
-\begin{definition}[\factories{} \F{}, \mixinbuilders{} \B{} and \from{}]
-  A \emph{\mixinbuilder{}} \(\mu \in \B{}\) is any function which parameters are the carrier
-  type \coq{(T: Type)}, an arbitrary number of distinct \mixins{}
-  \(\enum{m_1}{m_n}\) and an additional argument \(f\), which we call
-  a \emph{\factory{}}, and which depends on the \mixins{}. Its return type is
-  a \mixin{} \(m_{n+1} \in \M{}\) i.e.
+\begin{definition}[\factories{} \F{}]
+A \emph{\factory{}} \(f \in \F{}\) is a distinguished Coq record or definition with one or more parameters.
+The first parameter must be a \coq{(T : Type)}, while the other parameters
+are $n$ \mixins{}, applied to \coq{T} and previous mixin variables. I.e.
 \begin{coqcode}
-Definition f (T : Type) #$\pmp{n}$# : Type := ...
-Definition #$\mu$# (T : Type) #$\pmp{n}$#: #\(f\ T\ p_1 \ldots p_n\)# -> #\(m_{n+1}\ T\ p_{\sigma(n+1,1)}\ \ldots\ p_{\sigma(n+1,n_i)}\)# := ...
+Record (* or Definition *) #$f$# (T : Type) #\(\pmp{n}\)# : Type := ...
 \end{coqcode}
-
-  We define \(\from{} (f, m_{n+1}) = \mu\) to be the (unique) \mixinbuilder{}
-  for \(m_{n+1}\) from the \factory{} \(f\).
 \end{definition}
 
-\begin{definition}[$\provides{}$, $\requires{}$]
-  We define the following functions \begin{itemize}
-  \item\( \requires{}(f) = \enum{m_1}{m_n}  \in \powerset\M{}\)
-    is the set of mixins a \factory{} \(f \in \F{}\) depends on.
-    As a consequence all the
-    \mixinbuilders{} of a given \factory{} have the same set of
-    dependencies.
-  \item\( \provides{}(f) = \{m | \from{}(f,m) \textrm{ is defined}\}
+\begin{definition}[$\requires{}$, factory requirements.]
+  Given \(f \in \F{}\), we define \(\requires{}(f) \in \powerset\M{}\)
+  as the set of all \mixins{} that occur as parameters of \(f\), i.e.
+  \(\dep{}(f) = \enum{m_1}{m_n}\).
+\end{definition}
+
+The following property holds,
+\begin{proposition}[\requires{} is closed under \dep{}]
+\(\forall f \in \F{}, \dep{}^\star(\requires{}(f)) \subseteq \requires{}(f)\)
+\end{proposition}
+\begin{proof}
+Because Coq records and global definitions are well typed in the empty context.
+\end{proof}
+
+\begin{definition}[\mixinbuilders{} \B{}]
+  A \emph{\mixinbuilder{}} \(\mu \in \B{}\) is a distinguished function whose
+  return type is a mixin \(m_{n+1} \in \M{}\) and whose parameters are
+  the carrier type \coq{(T : Type)}, \mixins{}
+  \(\enum{m_1}{m_n} \in \powerset\M{}\) and a \emph{\factory{}}
+  \(f \in \F{}\), such that \( \requires{}(f) =
+  \enum{m_1}{m_n}\). I.e.
+\begin{coqcode}
+Definition #$\mu$# (T : Type) #$\pmp{n}$#: #\(f\ T\ p_1 \ldots p_n\)# -> #\(m_{n+1}\ T\ p_{\sigma(n+1,1)}\ \ldots\ p_{\sigma(n+1,q_{n+1})}\)# := ...
+\end{coqcode}
+\end{definition}
+
+Note that the \mixinbuilders{} of a given \factory{} have the same set
+of dependencies.
+
+\begin{definition}[\from]
+  We define \(\from{} (f, m_{n+1}) = \mu\) to be the (unique) \mixinbuilder{}
+  for \(m_{n+1}\) from the \factory{} \(f\), when it exists.
+\end{definition}
+
+Note that \(\from\) is not a total function, and that \(\from{}(f, m)\) is
+defined if and only if there is a declared builder that shows how to
+build $m$ from $f$. In this case, we say $f$ provides $m$.
+
+\begin{definition}[$\provides{}$]
+  \( \provides{}(f) = \{m | \from{}(f,m) \textrm{ is defined}\}
     \in \powerset\M{}\) the set of mixins that a factory
     \(f \in \F{}\) provides, through its \mixinbuilders{}.
-  \end{itemize}
-Moreover the following properties hold for all \(f \in \F{}\):
-  %\begin{proposition}
-  %  They validate the following properties for all \(f \in \F{}\):
-    \begin{enumerate}
-      \item\( \dep{}^\star(\requires{}(f)) \subseteq \requires{}(f)\)
-      \item\( \requires{}(f) \cap \provides{}(f) = \emptyset \)
-      \item\( \forall m \in \provides{}(f),~ \from{}(f,m) \) is defined
-    \end{enumerate}
-  %\end{proposition}
 \end{definition}
 
 \Mixins{} are declared by the user as the fundamental building blocks of
 a hierarchy. As the next proposition shows they shall not be distinguished
 from regular \factories{}, since they are a special cases.
 
-\begin{proposition}[\( \M{} \subseteq \F{} \)] For all \(m \in \M{}\)
-  we have \(\requires{}(m) = \dep{}(m)\), \(\provides{}(m) = \{m\}\)
-  and
-  \(\from{}(m,m) = \left(\coq{fun T }\ \pmp{n} \ \coq{(x :}\ m\
-  \coq{T }\ p_1\ \ldots p_n\ \coq{) => x}\right) \in \B{}.\)
+\begin{proposition}[\( \M{} \subseteq \F{} \)] There is a way to see mixins as factories.
 \end{proposition}
+\begin{proof}
+  For all \(m \in \M{}\) we have \(\requires{}(m) = \dep{}(m)\),
+  \(\provides{}(m) = \{m\}\) and
+  \(\from{}(m,m) = \left(\coq{fun T }\ \pmp{n} \ \coq{(x :}\ m\
+    \coq{T }\ p_1\ \ldots p_n\ \coq{) => x}\right) \in \B{}.\)
+\end{proof}
 
 
 \begin{command} to declare a new mixin:
 \begin{coqcode}
 #\hbmixin{}# Record M T of #$f_1\ \ldots\ f_n$# := { .. }.
 \end{coqcode}
-  Creates a module \coq{M} with a record
-  \coq{M}, which depends on the \mixins{}
-  \(\requires{}(\coq{M}) =
+  Creates a module \coq{M} with a record which is exported as
+  \coq{M}, and which depends on the \mixins{}
+  \(\requires{}(\coq{M}) = \dep{}(\coq{M}) =
   \provides{}^\star\left(\enum{f_1}{f_n}\right)\), and registers this
-  new record both as a \mixin{} and a \factory{}. It also creates a
+  new record both as a \mixin{} and a \factory{}. It also exports an
   \phantterm{} \coq{M.Build.}
 \end{command}
 
 \begin{command} to declare an instance: \hbinstance{}
   \(X\ b_1 \ldots b_k\), synthesizes terms corresponding to all the
   \mixins{} that can be built from the $b_i$. Indeed if
-  \(b_i : f_i\ T\ \ldots\), then this command creates elements of type
+  \(b_i : f_i\ T\ \ldots\), then this command creates elements of types
   \(\provides{}^\star\left(\enum{f_1}{f_k}\right).\) This command also
   generates unification hints as described in
   Section~\ref{sec:target-lang}.
 \end{command}
 
-\begin{command} to declare a new \factory{} and generate new \mixinbuilders:
+\begin{commands} to declare a new \factory{} and generate new \mixinbuilders:
 \begin{coqcode}
-#\hbfactory{}# Record M T of #$f_1\ \ldots\ f_n$# := { .. }.
-#\hbbuilders{}# Context T (a : M A).
+#\hbfactory{}# Record F T of #$f_1\ \ldots\ f_n$# := { .. }.
+#\hbbuilders{}# Context T (a : F T).
 
   Definition #$b_{n+1}$# : #$f_{n+1}$# T .. := ...
   #\hbinstance{}# T #$b_{n+1}$#.
@@ -683,23 +715,24 @@ from regular \factories{}, since they are a special cases.
   #\hbinstance{}# T #$b_{n+k}$#.
 #\hbend{}#.
 \end{coqcode}
-  Creates a module \coq{M} with a record
-  \coq{M}, which depends on the mixins
+  Creates a module \coq{F} with a record which is exported as
+  \coq{F}, and which depends on the mixins
   \(\requires{}(\coq{M}) =
   \provides{}^\star\left(\enum{f_1}{f_n}\right)\) and registers this
-  new record as a factory. We then use the \factoryinstances{}
+  new record as a factory.  It also exports an
+  \phantterm{} \coq{F.Build.} We then use the \factoryinstances{}
   \(b_{n+1}, \ldots, b_{n+k}\) provided by the user and derive
   \mixinbuilders{} from them, so that
-  \(\provides{}(\coq{M}) = \provides{}^\star\left(\enum{f_{n+1}}{f_{n+k}}\right).\)
+  \(\provides{}(\coq{F}) = \provides{}^\star\left(\enum{f_{n+1}}{f_{n+k}}\right).\)
 
   It is thus necessary that
   \(\requires{}^\star\left(\enum{f_{n+1}}{f_{n+k}}\right) \subseteq
   \provides{}^\star\left(\enum{f_1}{f_n}\right).\)
-\end{command}
+\end{commands}
 
 Note that the \(b_i\) are not \mixinbuilders{} since their return types
-are not necessarily \mixins{}, but could be a \factory{}. However, since all
-\factories{} provide \mixin{} through \mixinbuilders{}, we can
+are not necessarily \mixins{}, but could be \factories{}. However, since all
+\factories{} provide \mixins{} through \mixinbuilders{}, we
 obtain \mixinbuilders{} out of each \(b_i\) by function composition.
 
 \subsection{\HB{} classes and structures}
@@ -707,11 +740,11 @@ obtain \mixinbuilders{} out of each \(b_i\) by function composition.
 
 
 \begin{definition}[\C{}, class]
-A \class{} \coq{c} \(\in \C{}\) is a Coq record with one parameter
+A \class{} \coq{c} \(\in \C{}\) is distinguished a Coq record with one parameter
 \coq{(T : Type)}. The type of each field is a \mixin{} in \M{} applied to
 \coq{T} and, if needed, any number of other fields:
 \begin{coqcode}
-Record #$c$# (T : Type) := { #\(p_1 : m_1\ T\)#; .. ; #\(p_i : m_i\ T\ p_{\sigma(i,1)}\ \ldots p_{\sigma(i,n_i)}\)#; ..}.
+Record #$c$# (T : Type) := { #\(p_1 : m_1\ T\)#; .. ; #\(p_i : m_i\ T\ p_{\sigma(i,1)}\ \ldots p_{\sigma(i,q_i)}\)#; ..}.
 \end{coqcode}
 \end{definition}
 
@@ -728,7 +761,8 @@ Record #$c$# (T : Type) := { #\(p_1 : m_1\ T\)#; .. ; #\(p_i : m_i\ T\ p_{\sigma
 \begin{invariant}[\cdef{}]
   For all \(f \in \F{}\):
   \begin{enumerate}
-    \item\( \exists c \in \C{},~ \cdef{}(c) = \requires{}^\star(f) \cup \provides{}^\star(f),\)
+    \item\( \exists c \in \C{},~ \cdef{}(c) = \requires{}^\star(f)
+      \cup \provides{}^\star(f),\)
     \item\( \exists C \subseteq \C{},~\cdef{}^\star(C) = \requires{}^\star(f).\)
   \end{enumerate}
 \end{invariant}
@@ -745,7 +779,7 @@ way users may refer to a class is as an argument of \hbmixin{},
 \hbfactory{} or \hbstructure{}.
 
 \begin{definition}[\Str{} Structure]
-A \structure{} \coq{s} \(\in \Str{}\) is a dependent pair: a Coq record where
+A \structure{} \coq{s} \(\in \Str{}\) is a distinguished dependent pair: a Coq record where
 the value of the first field occurs in the type of the second.
 The first field is \coq{(sort : Type)} and the second field is
 \coq{(class : c sort)} for some \coq{c} \(\in \C{}\).
@@ -754,7 +788,7 @@ As a consequence \structures{} are in bijection with \classes{}.
 
 
 \begin{command} to declare a class and structure:
-  \hbstructure{} \coq#Definition M := { A of# \(f_1 \ldots f_n\) \coq#}.#
+  \hbstructure{} \coq#Definition M := { A of# \(f_1 \ldots f_n\) \coq#}#
   crafts a class \coq{M.class_of} $\in \C{}$ where
   $\cdef{}(c) = \provides{}^\star\left(\enum{f_1}{f_n}\right) $ and the
   corresponding structure \coq{M.type} $\in \Str{}$, together with
@@ -817,11 +851,14 @@ Definition b : #$f$# T := #$F$# T #\(x_1\ \ldots\ x_n\)#
 \section{The target language: Coq with Packed, flat, Classes}
 \label{sec:target-lang}
 
-The language of Packed Classes~\cite{DBLP:conf/tphol/GarillotGMR09} is used directly to describe the algebraic hierarchy of the Mathematical Components library.
-It is based on a disciplined use of records and projections and on the possibility of extending the elaborator of Coq via the declaration of Canonical Structures~\cite{DBLP:conf/itp/MahboubiT13} instances.
-In this section, we describe the \emph{flat} variant of Packed Classes, the target language of \hb{}, through the hierarchy V3 extended with semirings.
-
-The \hb{} addon can generate all the Coq declarations in this section automatically, but some details are omitted for brevity in this section.
+The language of packed classes were introduced in
+\cite{DBLP:conf/tphol/GarillotGMR09} and used directly to describe the
+algebraic hierarchy of the Mathematical Components library.
+It is based on a disciplined use of records and projections and
+on the possibility of extending the elaborator of Coq
+via the declaration of Canonical Structures instances.
+In this section we describe the \emph{flat} variant of
+Packed Classes, the target language of \HB{}.
 
 \subsection{Describing structures with records and projections}
 
@@ -858,7 +895,7 @@ Lemma addrA {T : Monoid.type} : associative (@add T).
 
 Next we define Abelian groups.
 Since the monoid structure is the bottom of this hierarchy its class record
-\coq{Monoid} consists of just one \mixin{}. In contrast the class record
+\coq{Monoid} consists just one \mixin{}. In contrast the class record
 of Abelian groups consists of two \mixins{} where the second one depends
  on the former (since Abelian groups inherit from monoids).
 \begin{coqcode}
@@ -896,8 +933,8 @@ Coercion A_to_B (T : A.type) : B.type :=
 
 \subsection{Multiple inheritance}
 In order to introduce multiple inheritance, we extend the hierarchy described in
-section~\ref{subsec:v3} with the structure of semirings %, which is another
-%intermediate structure between monoids and rings 
+section~\ref{subsec:v3} with the structure of semirings%, which is another
+%intermediate structure between monoids and rings
 as depicted in figure \ref{fig:puzzle_v4}. Semirings introduce the binary
 multiplication operator \coq{mul} and its identity element \coq{one}.
 
@@ -976,7 +1013,7 @@ Structures~\cite{DBLP:conf/itp/MahboubiT13,Saibi99phd} mechanism, which
 lets the user extend the elaborator of Coq, in order to handle
 inheritance and inference of structure~\cite{affeldt:hal-02463336,KSdraft,DBLP:conf/tphol/GarillotGMR09}.
 This software component
-takes as input a term as written by the user and has to infer all the missing information that is necessary in order to make the term well typed.
+takes in input a term as written by the user and has to infer all the missing information that is necessary in order to make the term well typed.
 
 A first example of elaboration that requires canonical structures is \(0 + 1\).
 After removing all syntactic facilities, the underlying Coq term is
