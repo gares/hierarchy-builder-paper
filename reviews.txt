@@ -141,6 +141,9 @@ prove?
   * from (m, m) = fun T (p : m T p σ ) (x : m T p 1 . . . p n ) => x ∈ B
   Qed.
 
+=ET= =KS= I rewrote, split, and reshuffled almost all the definitions,
+in Sect.3.1. Please take a look.
+
 Section 4:
   What are you describing here?
   Is it the code your tool generate?
