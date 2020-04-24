@@ -98,17 +98,17 @@
 %Examples of how EasyChair processes papers. Caveats (replacement of EC
 %class, errors).
 
-\section{Context}
+\section{Context and Talk proposal}
 
 There is no questioning the importance of abstract algebra in the mathematical
 vernacular. And it is with no surprise that libraries of machine checked code
 are, nowadays, organized around hierarchies of structures. Unfortunately the
 language of Type Theory and the features provided by the Coq system make the
 construction of a hierarchy hard even for expert users. The difficulty
-begins with the non orthogonal choices of the encoding style, from bundled to
+begins with the non-orthogonal choices of the encoding style, from bundled to
 unbundled, and inference mechanism, from Type Classes to Canonical Structures.
-To this one may add the concerns about performance and finally the ones about
-the usability of the final hierarchy.
+To this, one may add the concerns about performance and about
+the usability, by a non expert, of the final hierarchy.
 
 In this talk we give an extensive demo of the Hierarchy Builder (\HB{})
 extension for the Coq system version 8.10 and above.
@@ -119,14 +119,14 @@ structures and to teach the elaborator of Coq how to take advantage of this
 knowledge during type inference. Finally \HB{} lets the library designer
 improve the usability of his library by providing alternative interfaces
 to the primitive ones, a feature that can also be used to accommodate changes
-without breaking user code.
+to the hierarchy without breaking user code.
 
 The details of \HB{}, including its compilation to the (Flat) Packed Classes
 discipline and its implementation in the Elpi extension language for Coq,
 are given in~\cite{cohen:hal-02478907}.
-In this talk we focus on how to take advantage
-of \HB{} in a Coq development, and we plan to not detail how it works
-behind the scenes, unless specific questions arise from the audience.
+In this talk we focus on how to use \HB{} in a Coq development, and we plan
+to not detail how it works behind the scenes, unless specific questions
+arise from the audience.
 
 \section{A hierarchy with a diamond in 50 lines}
 
@@ -202,14 +202,11 @@ HB.instance Z Z_SemiRing.
 Check forall x : Z, x * - (1 + x) = 0 + 1.
 \end{coqcode}
 
-For space constraints we omit the 30 lines in which we use
-the \coq{HB.factory} command to declare an alternative interface
-to build examples of the \coq{Ring} structure (the green
-arrow in the picture) by providing all proofs at once but for the
-one on the commutativity of the Monoid operation:
-the other Ring axioms imply it~\cite{nearrings}. Factories can also be used to
-preserve backward compatibility when an hierarchy evolves to accommodate
-new intermediate  structures.
+For space constraints we omit the declaration of the green arrow
+in the picture (about 30 lines) which is an alternative interface
+to build examples of the \coq{Ring} structure by providing all
+proofs at once. In that case the user is spared to prove the commutativity
+of the Monoid operation since it is implied by the other axioms~\cite{nearrings}.
 
 \bibliography{biblio}
 
