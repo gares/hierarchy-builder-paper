@@ -461,7 +461,7 @@ equipped with \emph{\builder{}s}: user provided pieces of code that extract
 from the \factory{} the contents of \mixins{}, so that existing
 \phantterm{}s can be used.
 
-As depicted in figure~\ref{fig:puzzle} we change again the hierarchy
+As depicted in Figure~\ref{fig:puzzle} we change again the hierarchy
 by declaring a \coq{Ring_of_Monoid} \factory{}, that, from the user point of view,
 will look indistinguishable from the old \coq{Ring_of_Monoid} \mixin{}
 and hence grant backward compatibility between version V3 and version V1.
@@ -861,8 +861,8 @@ Packed Classes, the target language of \HB{}.
 \subsection{Describing structures with records and projections}
 
 We describe mathematical structures with three kinds of dependent records: mixins, classes, and structures.
-As shown in section \ref{sec:example}, a \mixin{} gathers operators and axioms newly introduced by a structure.
-As in \cite[section 2.4]{DBLP:conf/tphol/GarillotGMR09}\cite[section 2]{KSdraft}, a class record is parametrized by the carrier type \coq{(T : Type)} and gathers all the operators and axioms of a structure by assembling mixins, and a \coq{Structure type} (a record) bundles a carrier and its class instance, as follows.
+As shown in Section \ref{sec:example}, a \mixin{} gathers operators and axioms newly introduced by a structure.
+As in \cite[Section 2.4]{DBLP:conf/tphol/GarillotGMR09}\cite[Section 2]{KSdraft}, a class record is parametrized by the carrier type \coq{(T : Type)} and gathers all the operators and axioms of a structure by assembling mixins, and a \coq{Structure type} (a record) bundles a carrier and its class instance, as follows.
 \begin{coqcode}
 Module Monoid.
 Record axioms (T : Type) : Type :=
@@ -931,11 +931,12 @@ Coercion A_to_B (T : A.type) : B.type :=
 
 \subsection{Multiple inheritance}
 In order to introduce multiple inheritance, we extend the hierarchy described in
-section~\ref{subsec:v3} with the structure of semirings%, which is another
+Section~\ref{subsec:v3} with the structure of semirings %, which is another
 %intermediate structure between monoids and rings
-as depicted in figure \ref{fig:puzzle_v4}. Semirings introduce the binary
-multiplication operator \coq{mul} and its identity element \coq{one}.
-The full code of this V4 is available in Appendix~\ref{sec:full-v4-code}.
+as depicted in Figure~\ref{fig:puzzle_v4}, and name it V4. Semirings introduce the
+binary multiplication operator \coq{mul} and its identity element
+\coq{one}.  For the sake of completeness, the full code of V4 is available in
+Appendix~\ref{sec:full-v4-code}.
 
 \begin{coqcode}
 #\hbmixin{}# Record SemiRing_of_Monoid A of Monoid A := {
@@ -1486,7 +1487,7 @@ HB.factory Record Ring_of_AbelianGroup A of AbelianGroup A := {
   mulrDr : right_distributive mul add;
 }.
 
-(* Builder arrow from top right to bottom left *)
+(* Builder arrow from top right to bottom left in Fig. 2. *)
 HB.builders Context (A : Type) (f : Ring_of_AbelianGroup A).
 
   Fact mul0r : left_zero zero mul_f.
