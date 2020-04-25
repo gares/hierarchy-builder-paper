@@ -278,14 +278,14 @@ HB.builders Context (A : Type) (f : Ring_of_Monoid A).
 
   Lemma addrC : commutative (add : A -> A -> A).
   Proof.
+  have innerC (a b : A) : a + b + (a + b) = a + a + (b + b).
+    by rewrite -[a+b]mul1r_f -mulrDl_f mulrDr_f !mulrDl_f !mul1r_f.
   have addKl (a b c : A) : a + b = a + c -> b = c.
     apply: can_inj (add a) (add (opp_f a)) _ _ _.
     by move=> x; rewrite addrA addNr_f add0r.
   have addKr (a b c : A) : b + a = c + a -> b = c.
     apply: can_inj (add ^~ a) (add ^~ (opp_f a)) _ _ _.
     by move=> x; rewrite /= -addrA addrN_f addr0.
-  have innerC (a b : A) : a + b + (a + b) = a + a + (b + b).
-    by rewrite -[a+b]mul1r_f -mulrDl_f mulrDr_f !mulrDl_f !mul1r_f.
   move=> x y; apply: addKl (x) _ _ _; apply: addKr (y) _ _ _.
   by rewrite -!addrA [in RHS]addrA innerC !addrA.
   Qed.
