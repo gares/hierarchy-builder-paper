@@ -3,6 +3,10 @@ From HB Require Import structures.
 
 Module V1.
 
+Declare Scope hb_scope.
+Delimit Scope hb_scope with G.
+Open Scope hb_scope.
+
 HB.mixin Record Monoid_of_Type A := {
   zero : A;
   add : A -> A -> A;
@@ -11,6 +15,8 @@ HB.mixin Record Monoid_of_Type A := {
   addr0 : right_id zero add;
 }.
 HB.structure Definition Monoid := { A of Monoid_of_Type A }.
+Notation "0" := zero : hb_scope.
+Infix "+" := (@add _) : hb_scope.
 
 HB.mixin Record Ring_of_Monoid A of Monoid A := {
   one : A;
@@ -26,15 +32,10 @@ HB.mixin Record Ring_of_Monoid A of Monoid A := {
 }.
 HB.structure Definition Ring := { A of Monoid A & Ring_of_Monoid A }.
 
-Declare Scope hb_scope.
-Delimit Scope hb_scope with G.
-Open Scope hb_scope.
-Notation "0" := zero : hb_scope.
 Notation "1" := one : hb_scope.
-Infix "+" := (@add _) : hb_scope.
 Notation "- x" := (@opp _ x) : hb_scope.
-Infix "*" := (@mul _) : hb_scope.
 Notation "x - y" := (x + - y) : hb_scope.
+Infix "*" := (@mul _) : hb_scope.
 
 (* Theory *)
 
@@ -57,6 +58,10 @@ End V1.
 
 Module V2.
 
+Declare Scope hb_scope.
+Delimit Scope hb_scope with G.
+Open Scope hb_scope.
+
 HB.mixin Record Monoid_of_Type A := {
   zero : A;
   add : A -> A -> A;
@@ -65,6 +70,8 @@ HB.mixin Record Monoid_of_Type A := {
   addr0 : right_id zero add;
 }.
 HB.structure Definition Monoid := { A of Monoid_of_Type A }.
+Notation "0" := zero : hb_scope.
+Infix "+" := (@add _) : hb_scope.
 
 HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
   opp : A -> A;
@@ -73,6 +80,8 @@ HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
 }.
 HB.structure Definition AbelianGroup :=
   { A of Monoid A & AbelianGroup_of_Monoid A }.
+Notation "- x" := (@opp _ x) : hb_scope.
+Notation "x - y" := (x + - y) : hb_scope.
 
 HB.mixin Record Ring_of_AbelianGroup A of AbelianGroup A := {
   one : A;
@@ -82,24 +91,21 @@ HB.mixin Record Ring_of_AbelianGroup A of AbelianGroup A := {
   mulrDl : left_distributive mul add;   mulrDr : right_distributive mul add;
 }.
 HB.structure Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
+Notation "1" := one : hb_scope.
+Infix "*" := (@mul _) : hb_scope.
+
 Lemma addrN {R : AbelianGroup.type} : right_inverse (@zero R) opp add.
 Proof. by move=> x; rewrite addrC addNr. Qed.
-
-Declare Scope hb_scope.
-Delimit Scope hb_scope with G.
-Open Scope hb_scope.
-Notation "0" := zero : hb_scope.
-Notation "1" := one : hb_scope.
-Infix "+" := (@add _) : hb_scope.
-Notation "- x" := (@opp _ x) : hb_scope.
-Infix "*" := (@mul _) : hb_scope.
-Notation "x - y" := (x + - y) : hb_scope.
 
 Check addrC. (* It is not a lemma anymore *)
 
 End V2.
 
 Module V3.
+
+Declare Scope hb_scope.
+Delimit Scope hb_scope with G.
+Open Scope hb_scope.
 
 HB.mixin Record Monoid_of_Type A := {
   zero : A;
@@ -109,6 +115,8 @@ HB.mixin Record Monoid_of_Type A := {
   addr0 : right_id zero add;
 }.
 HB.structure Definition Monoid := { A of Monoid_of_Type A }.
+Notation "0" := zero : hb_scope.
+Infix "+" := (@add _) : hb_scope.
 
 HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
   opp : A -> A;
@@ -116,6 +124,8 @@ HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
   addNr : left_inverse zero opp add;
 }.
 HB.structure Definition AbelianGroup := { A of Monoid A & AbelianGroup_of_Monoid A }.
+Notation "- x" := (@opp _ x) : hb_scope.
+Notation "x - y" := (x + - y) : hb_scope.
 
 HB.mixin Record Ring_of_AbelianGroup A of AbelianGroup A := {
   one : A;
@@ -127,16 +137,8 @@ HB.mixin Record Ring_of_AbelianGroup A of AbelianGroup A := {
   mulrDr : right_distributive mul add;
 }.
 HB.structure Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
-
-Declare Scope hb_scope.
-Delimit Scope hb_scope with G.
-Open Scope hb_scope.
-Notation "0" := zero : hb_scope.
 Notation "1" := one : hb_scope.
-Infix "+" := (@add _) : hb_scope.
-Notation "- x" := (@opp _ x) : hb_scope.
 Infix "*" := (@mul _) : hb_scope.
-Notation "x - y" := (x + - y) : hb_scope.
 
 Lemma addrN {R : AbelianGroup.type} : right_inverse (zero : R) opp add.
 Proof. by move=>x; rewrite addrC addNr. Qed.
@@ -185,6 +187,10 @@ End V3.
 
 Module V4.
 
+Declare Scope hb_scope.
+Delimit Scope hb_scope with G.
+Open Scope hb_scope.
+
 HB.mixin Record Monoid_of_Type A := {
   zero : A;
   add : A -> A -> A;
@@ -193,6 +199,8 @@ HB.mixin Record Monoid_of_Type A := {
   addr0 : right_id zero add;
 }.
 HB.structure Definition Monoid := { A of Monoid_of_Type A }.
+Notation "0" := zero : hb_scope.
+Infix "+" := (@add _) : hb_scope.
 
 HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
   opp : A -> A;
@@ -200,6 +208,8 @@ HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
   addNr : left_inverse zero opp add;
 }.
 HB.structure Definition AbelianGroup := { A of Monoid A & AbelianGroup_of_Monoid A }.
+Notation "- x" := (@opp _ x) : hb_scope.
+Notation "x - y" := (x + - y) : hb_scope.
 
 HB.mixin Record SemiRing_of_Monoid A of Monoid A := {
   one : A;
@@ -213,16 +223,8 @@ HB.mixin Record SemiRing_of_Monoid A of Monoid A := {
   mulr0 : right_zero zero mul;
 }.
 HB.structure Definition SemiRing := { A of Monoid A & SemiRing_of_Monoid A }.
-
-Declare Scope hb_scope.
-Delimit Scope hb_scope with G.
-Open Scope hb_scope.
-Notation "0" := zero : hb_scope.
 Notation "1" := one : hb_scope.
-Infix "+" := (@add _) : hb_scope.
-Notation "- x" := (@opp _ x) : hb_scope.
 Infix "*" := (@mul _) : hb_scope.
-Notation "x - y" := (x + - y) : hb_scope.
 
 Lemma addrN {R : AbelianGroup.type} : right_inverse (zero : R) opp add.
 Proof. by move=>x; rewrite addrC addNr. Qed.
@@ -260,6 +262,13 @@ HB.builders Context (A : Type) (f : Ring_of_AbelianGroup A).
 
 HB.end.
 HB.structure Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
+
+(* trivial factory: top left factory in fig.2 *)
+HB.factory Definition Ring_of_SemiRing A of SemiRing A := AbelianGroup_of_Monoid A.
+HB.builders Context (A : Type) (f : Ring_of_SemiRing A).
+  Definition to_AbelianGroup_of_Monoid : AbelianGroup_of_Monoid A := f.
+  HB.instance A to_AbelianGroup_of_Monoid.
+HB.end.
 
 HB.factory Record Ring_of_Monoid A of Monoid A := {
   one : A;

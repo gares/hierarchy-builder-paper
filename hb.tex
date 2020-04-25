@@ -246,7 +246,7 @@ language and we position \HB{} in the literature.
 \label{sec:example}
 
 The first version of our hierarchy (that we name V1) features only two
-structures: \coq{Monoid} and \coq{Ring}.
+structures: \coq{Monoid} and \coq{Ring}. We use notations from Appendix~\ref{sec:coq-reference} to define them.
 %\marginpar{remove hb.end for \mixins{}, use next release of coq elpi}
 \begin{coqcode}
 #\hbmixin{}# Record Monoid_of_Type A := {                       #\label{demo:mixin:mot}#
@@ -311,7 +311,7 @@ Check @add.        (* add          :   forall M : Monoid.type, M -> M -> M      
 Check @addNr.      (* addNr        :   forall R : Ring.type, left_inverse zero opp add *) #\label{demo:theory:check:addNr}#
 
 Lemma addrC : forall R : Ring.type, commutative (@add R).                       #\label{demo:theory:state:addrC}#
-Proof. (* Proof by Hankel 1867, omitted for brevity *) Qed.
+Proof. (* Proof by Hankel 1867, in Appendix B *) Qed.
 
 Definition Z_Monoid_axioms : Monoid_of_Type Z :=                         #\label{demo:theory:z:monoid:axioms}#
   Monoid_of_Type.Build Z 0 Z.add Z.add_assoc Z.add_0_l Z.add_0_r.
@@ -467,9 +467,8 @@ will look indistinguishable from the old \coq{Ring_of_Monoid} \mixin{}
 and hence grant backward compatibility between version V3 and version V1.
 
 \begin{coqcode}
-#\hbfactory{}# Record Ring_of_Monoid A of Monoid A := {
-  ... (* unchanged, see page 2 line 13 *) ...
-}.
+#\hbfactory{}# Record Ring_of_Monoid A of Monoid A := { ... (* unchanged *) ...}.
+
 #\hbbuilders{}# Context A (f : Ring_of_Monoid A).                          #\label{demo3:variable:f}#
 
   Lemma addrC : commutative add. Proof. (* The same proof as before *) Qed.
@@ -478,9 +477,8 @@ and hence grant backward compatibility between version V3 and version V1.
     AbelianGroup_of_Monoid.Build A (opp f) addrC (addNr f). (* addrN unused *)
   #\hbinstance{}# A to_AbelianGroup_of_Monoid.
 
-  Definition to_Ring_of_AbelianGroup :=
-    Ring_of_AbelianGroup.Build A (one f) (mul f)
-      (mulrA f) (mul1r f) (mulr1 f) (mulrDl f) (mulrDr f).
+  Definition to_Ring_of_AbelianGroup :=  Ring_of_AbelianGroup.Build A
+    (one f) (mul f) (mulrA f) (mul1r f) (mulr1 f) (mulrDl f) (mulrDr f).
   #\hbinstance{}# A to_Ring_of_AbelianGroup.
 
 #\hbend{}#.
@@ -937,6 +935,7 @@ section~\ref{subsec:v3} with the structure of semirings%, which is another
 %intermediate structure between monoids and rings
 as depicted in figure \ref{fig:puzzle_v4}. Semirings introduce the binary
 multiplication operator \coq{mul} and its identity element \coq{one}.
+The full code of this V4 is available in Appendix~\ref{sec:full-v4-code}.
 
 \begin{coqcode}
 #\hbmixin{}# Record SemiRing_of_Monoid A of Monoid A := {
@@ -1386,28 +1385,29 @@ of the hierarchy.
 \appendix
 
 \section{Coq reference}
-
+\label{sec:coq-reference}
 \begin{coqcode}
 Section OperationProperties.
-Variable T : Type.
-Variable e : T.
-Variable inv : T -> T.
-Variable op : T -> T -> T.
-Variable add : T -> T -> T.
+
+Variables (T : Type) (e : T) (inv : T -> T) (op : T -> T -> T) (add : T -> T -> T).
 
 Definition left_id  := forall x, op e x = x.
 Definition right_id := forall x, op x e = x.
 
 Definition left_inverse := forall x, op (inv x) x = e.
+Definition right_inverse := forall x, op x (inv x) = e.
 
 Definition commutative := forall x y, op x y = op y x.
 Definition associative := forall x y z, op x (op y z) = op (op x y) z.
 
 Definition left_distributive  := forall x y z, op (add x y) z = add (op x z) (op y z).
 Definition right_distributive := forall x y z, op x (add y z) = add (op x y) (op x z).
+
+End OperationProperties.
 \end{coqcode}
 
 \section{Proof of addrC}
+\label{sec:proof-addrc}
 \begin{coqcode}
 Lemma addrC {R : Ring.type} : commutative (@add R).
 Proof.
@@ -1425,6 +1425,7 @@ Qed.
 \end{coqcode}
 
 \section{Full V4 code}
+\label{sec:full-v4-code}
 \begin{coqcode}
 From Coq Require Import ssreflect ssrfun ZArith.
 From HB Require Import structures.
@@ -1433,6 +1434,7 @@ Declare Scope hb_scope.
 Delimit Scope hb_scope with G.
 Open Scope hb_scope.
 
+(* Bottom mixin in Fig. 2. *)
 HB.mixin Record Monoid_of_Type A := {
   zero : A;
   add : A -> A -> A;
@@ -1444,6 +1446,7 @@ HB.structure Definition Monoid := { A of Monoid_of_Type A }.
 Notation "0" := zero : hb_scope.
 Infix "+" := (@add _) : hb_scope.
 
+(* Bottom right mixin in Fig. 2. *)
 HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
   opp : A -> A;
   addrC : commutative (add : A -> A -> A);
@@ -1453,6 +1456,7 @@ HB.structure Definition AbelianGroup := { A of Monoid A & AbelianGroup_of_Monoid
 Notation "- x" := (@opp _ x) : hb_scope.
 Notation "x - y" := (x + - y) : hb_scope.
 
+(* Bottom left mixin in Fig. 2. *)
 HB.mixin Record SemiRing_of_Monoid A of Monoid A := {
   one : A;
   mul : A -> A -> A;
@@ -1471,6 +1475,7 @@ Infix "*" := (@mul _) : hb_scope.
 Lemma addrN {R : AbelianGroup.type} : right_inverse (zero : R) opp add.
 Proof. by move=> x; rewrite addrC addNr. Qed.
 
+(* Top right factory in Fig. 2. *)
 HB.factory Record Ring_of_AbelianGroup A of AbelianGroup A := {
   one : A;
   mul : A -> A -> A;
@@ -1481,6 +1486,7 @@ HB.factory Record Ring_of_AbelianGroup A of AbelianGroup A := {
   mulrDr : right_distributive mul add;
 }.
 
+(* Builder arrow from top right to bottom left *)
 HB.builders Context (A : Type) (f : Ring_of_AbelianGroup A).
 
   Fact mul0r : left_zero zero mul_f.
@@ -1504,6 +1510,16 @@ HB.builders Context (A : Type) (f : Ring_of_AbelianGroup A).
 HB.end.
 HB.structure Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
 
+(* Top left factory in Fig. 2. *)
+(* It is an exact copy of the bottom right mixin. *)
+HB.factory Definition Ring_of_SemiRing A of SemiRing A := AbelianGroup_of_Monoid A.
+(* The corresponding builder is the identity. *)
+HB.builders Context (A : Type) (f : Ring_of_SemiRing A).
+  Definition to_AbelianGroup_of_Monoid : AbelianGroup_of_Monoid A := f.
+  HB.instance A to_AbelianGroup_of_Monoid.
+HB.end.
+
+(* Right-most factory in Fig. 2. *)
 HB.factory Record Ring_of_Monoid A of Monoid A := {
   one : A;
   opp : A -> A;
@@ -1533,12 +1549,15 @@ HB.builders Context (A : Type) (f : Ring_of_Monoid A).
   by rewrite -!addrA [in RHS]addrA innerC !addrA.
   Qed.
 
+  (* Builder to the bottom right mixin. *)
   Definition to_AbelianGroup_of_Monoid := AbelianGroup_of_Monoid.Build A opp_f addrC addNr_f.
   HB.instance A to_AbelianGroup_of_Monoid.
 
+  (* Builder to the top right factory, which is compiled to the bottom left mixin. *)
   Definition to_Ring_of_AbelianGroup := Ring_of_AbelianGroup.Build A one_f mul_f
     mulrA_f mul1r_f mulr1_f mulrDl_f mulrDr_f.
   HB.instance A to_Ring_of_AbelianGroup.
+
 HB.end.
 \end{coqcode}
 
