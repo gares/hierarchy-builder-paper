@@ -318,7 +318,7 @@ Definition Z_Monoid_axioms : Monoid_of_Type Z :=                         #\label
 
 #\hbinstance{}# Z Z_Monoid_axioms.                                            #\label{demo:theory:z:monoid:canonical}#
 
-Definition Z_Ring_axioms : Ring_of_Monoid Z _ :=                        #\label{demo:theory:z:ring:axioms}#
+Definition Z_Ring_axioms : Ring_of_Monoid Z :=                        #\label{demo:theory:z:ring:axioms}#
   Ring_of_Monoid.Build Z 1 Z.opp Z.mul
     Z.add_opp_diag_l Z.add_opp_diag_r Z.mul_assoc Z.mul_1_l Z.mul_1_r
     Z.mul_add_distr_r Z.mul_add_distr_l.
