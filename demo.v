@@ -55,6 +55,50 @@ Qed.
 
 End V1.
 
+Module V2.
+
+HB.mixin Record Monoid_of_Type A := {
+  zero : A;
+  add : A -> A -> A;
+  addrA : associative add;
+  add0r : left_id zero add;
+  addr0 : right_id zero add;
+}.
+HB.structure Definition Monoid := { A of Monoid_of_Type A }.
+
+HB.mixin Record AbelianGroup_of_Monoid A of Monoid A := {
+  opp : A -> A;
+  addrC : commutative (add : A -> A -> A);
+  addNr : left_inverse zero opp add;
+}.
+HB.structure Definition AbelianGroup :=
+  { A of Monoid A & AbelianGroup_of_Monoid A }.
+
+HB.mixin Record Ring_of_AbelianGroup A of AbelianGroup A := {
+  one : A;
+  mul : A -> A -> A;
+  mulrA : associative mul;
+  mul1r : left_id one mul;              mulr1 : right_id one mul;
+  mulrDl : left_distributive mul add;   mulrDr : right_distributive mul add;
+}.
+HB.structure Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
+Lemma addrN {R : AbelianGroup.type} : right_inverse (@zero R) opp add.
+Proof. by move=> x; rewrite addrC addNr. Qed.
+
+Declare Scope hb_scope.
+Delimit Scope hb_scope with G.
+Open Scope hb_scope.
+Notation "0" := zero : hb_scope.
+Notation "1" := one : hb_scope.
+Infix "+" := (@add _) : hb_scope.
+Notation "- x" := (@opp _ x) : hb_scope.
+Infix "*" := (@mul _) : hb_scope.
+Notation "x - y" := (x + - y) : hb_scope.
+
+Check addrC. (* It is not a lemma anymore *)
+
+End V2.
+
 Module V3.
 
 HB.mixin Record Monoid_of_Type A := {
@@ -259,7 +303,7 @@ HB.end.
 
 End V4.
 
-Import V3. (* V1, V3 and V4, they all work! *)
+Import V4. (* V1, V3 and V4, they all work! V2 does not. *)
 
 Definition Z_monoid_axioms : Monoid_of_Type Z :=
   Monoid_of_Type.Build Z 0%Z Z.add Z.add_assoc Z.add_0_l Z.add_0_r.
