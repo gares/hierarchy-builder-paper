@@ -667,8 +667,8 @@ build $m$ from $f$. In this case, we say $f$ provides $m$.
 \end{definition}
 
 \Mixins{} are declared by the user as the fundamental building blocks of
-a hierarchy. As the next proposition shows they shall not be distinguished
-from regular \factories{}, since they are a special cases.
+a hierarchy. As the next proposition shows they shall not be regarded as
+different from regular \factories{}, since they are a special cases.
 
 \begin{proposition}[\( \M{} \subseteq \F{} \)] There is a way to see mixins as factories.
 \end{proposition}
@@ -684,12 +684,14 @@ from regular \factories{}, since they are a special cases.
 \begin{coqcode}
 #\hbmixin{}# Record M T of #$f_1\ \ldots\ f_n$# := { .. }.
 \end{coqcode}
-  Creates a module \coq{M} with a record which is exported as
-  \coq{M}, and which depends on the \mixins{}
+  Declares the record \coq{M} inside an homonymous module \coq{M}.
+  The record \coq{M.M} depends on the \mixins{}
   \(\requires{}(\coq{M}) = \dep{}(\coq{M}) =
-  \provides{}^\star\left(\enum{f_1}{f_n}\right)\), and registers this
-  new record both as a \mixin{} and a \factory{}. It also exports an
-  \phantterm{} \coq{M.Build.}
+  \provides{}^\star\left(\enum{f_1}{f_n}\right)\)
+  and is registered both as a \mixin{} and a \factory{}. Finally It exports an
+  \phantterm{} \coq{M.Build} and a notation
+  \coq{M} standing for \coq{M.M}, so that the module name can be used to
+  denote the homonymous record it contains.
 \end{command}
 
 \begin{command} to declare an instance: \hbinstance{}
@@ -713,16 +715,18 @@ from regular \factories{}, since they are a special cases.
   #\hbinstance{}# T #$b_{n+k}$#.
 #\hbend{}#.
 \end{coqcode}
-  Creates a module \coq{F} with a record which is exported as
-  \coq{F}, and which depends on the mixins
+  Declares the record \coq{F} inside an homonymous module \coq{F}.
+  The record \coq{F.F} depends on the mixins
   \(\requires{}(\coq{M}) =
-  \provides{}^\star\left(\enum{f_1}{f_n}\right)\) and registers this
-  new record as a factory.  It also exports an
-  \phantterm{} \coq{F.Build.} We then use the \factoryinstances{}
-  \(b_{n+1}, \ldots, b_{n+k}\) provided by the user and derive
-  \mixinbuilders{} from them, so that
+  \provides{}^\star\left(\enum{f_1}{f_n}\right)\) and is registered
+  as a factory.  It exports an
+  \phantterm{} \coq{F.Build.} and a notation
+  \coq{F} standing for \coq{F.F}, so that the module name can be used to
+  denote the homonymous record it contains.
+  Finally it uses the \factoryinstances{}
+  \(b_{n+1}, \ldots, b_{n+k}\) provided by the user in order to derive
+  \mixinbuilders{}, so that
   \(\provides{}(\coq{F}) = \provides{}^\star\left(\enum{f_{n+1}}{f_{n+k}}\right).\)
-
   It is thus necessary that
   \(\requires{}^\star\left(\enum{f_{n+1}}{f_{n+k}}\right) \subseteq
   \provides{}^\star\left(\enum{f_1}{f_n}\right).\)
@@ -731,14 +735,14 @@ from regular \factories{}, since they are a special cases.
 Note that the \(b_i\) are not \mixinbuilders{} since their return types
 are not necessarily \mixins{}, but could be \factories{}. However, since all
 \factories{} provide \mixins{} through \mixinbuilders{}, we
-obtain \mixinbuilders{} out of each \(b_i\) by function composition.
+can obtain \mixinbuilders{} out of each \(b_i\) by function composition.
 
 \subsection{\HB{} classes and structures}
 \label{sec:hb-class-struct}
 
 
 \begin{definition}[\C{}, class]
-A \class{} \coq{c} \(\in \C{}\) is distinguished a Coq record with one parameter
+A \class{} \coq{c} \(\in \C{}\) is a distinguished Coq record with one parameter
 \coq{(T : Type)}. The type of each field is a \mixin{} in \M{} applied to
 \coq{T} and, if needed, any number of other fields:
 \begin{coqcode}
