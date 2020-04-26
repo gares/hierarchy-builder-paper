@@ -668,7 +668,7 @@ build $m$ from $f$. In this case, we say $f$ provides $m$.
 
 \Mixins{} are declared by the user as the fundamental building blocks of
 a hierarchy. As the next proposition shows they shall not be regarded as
-different from regular \factories{}, since they are a special cases.
+different from regular \factories{}, since they are a special case.
 
 \begin{proposition}[\( \M{} \subseteq \F{} \)] There is a way to see mixins as factories.
 \end{proposition}
@@ -684,14 +684,14 @@ different from regular \factories{}, since they are a special cases.
 \begin{coqcode}
 #\hbmixin{}# Record M T of #$f_1\ \ldots\ f_n$# := { .. }.
 \end{coqcode}
-  Declares the record \coq{M} inside an homonymous module \coq{M}.
-  The record \coq{M.M} depends on the \mixins{}
-  \(\requires{}(\coq{M}) = \dep{}(\coq{M}) =
+  Declares the record \coq{axioms} inside a module \coq{M}.
+  This record \coq{M.axioms} depends on the \mixins{}
+  \(\requires{}(\coq{M.axioms}) = \dep{}(\coq{M.axioms}) =
   \provides{}^\star\left(\enum{f_1}{f_n}\right)\)
   and is registered both as a \mixin{} and a \factory{}. Finally It exports an
   \phantterm{} \coq{M.Build} and a notation
-  \coq{M} standing for \coq{M.M}, so that the module name can be used to
-  denote the homonymous record it contains.
+  \coq{M} standing for \coq{M.axioms}, so that the module name can be used to
+  denote the \coq{axioms} record it contains.
 \end{command}
 
 \begin{command} to declare an instance: \hbinstance{}
@@ -715,14 +715,14 @@ different from regular \factories{}, since they are a special cases.
   #\hbinstance{}# T #$b_{n+k}$#.
 #\hbend{}#.
 \end{coqcode}
-  Declares the record \coq{F} inside an homonymous module \coq{F}.
-  The record \coq{F.F} depends on the mixins
-  \(\requires{}(\coq{M}) =
+  Declares the record \coq{axioms} inside a module \coq{F}.
+  This record \coq{F.axioms} depends on the mixins
+  \(\requires{}(\coq{F.axioms}) =
   \provides{}^\star\left(\enum{f_1}{f_n}\right)\) and is registered
   as a factory.  It exports an
-  \phantterm{} \coq{F.Build.} and a notation
-  \coq{F} standing for \coq{F.F}, so that the module name can be used to
-  denote the homonymous record it contains.
+  \phantterm{} \coq{F.Build} and a notation
+  \coq{F} standing for \coq{F.axioms}, so that the module name can be used to
+  denote the \coq{axioms} record it contains.
   Finally it uses the \factoryinstances{}
   \(b_{n+1}, \ldots, b_{n+k}\) provided by the user in order to derive
   \mixinbuilders{}, so that
@@ -735,7 +735,7 @@ different from regular \factories{}, since they are a special cases.
 Note that the \(b_i\) are not \mixinbuilders{} since their return types
 are not necessarily \mixins{}, but could be \factories{}. However, since all
 \factories{} provide \mixins{} through \mixinbuilders{}, we
-can obtain \mixinbuilders{} out of each \(b_i\) by function composition.
+obtain \mixinbuilders{} out of each \(b_i\) by function composition.
 
 \subsection{Classes and structures}
 \label{sec:hb-class-struct}
