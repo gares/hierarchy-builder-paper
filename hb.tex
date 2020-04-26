@@ -553,7 +553,7 @@ By using \HB{} the hierarchy designer has the following freedoms and advantages.
 \end{itemize}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{\HB{} language}\label{sec:language}
+\section{The \HB{} language}\label{sec:language}
 
 The Coq terms handled by \HB{} are subdivided in five categories, the
 \mixins{} \(\M{}\), the \factories{}~\(\F{}\), \mixinbuilders{}
@@ -566,7 +566,7 @@ generated when using \hbinstance{} while declaring a \factory{}, and
 the user may only refer to structure types, but should never rely on
 their implementation, neither should they rely on explicit builders.
 
-\subsection{\HB{} \mixins{}, \factories{} and instances}
+\subsection{\Mixins{}, \factories{} and instances}
 \label{sec:hb-mixins-factories}
 
 In this section, we call ``distinguished'' a Coq definition or record
@@ -737,7 +737,7 @@ are not necessarily \mixins{}, but could be \factories{}. However, since all
 \factories{} provide \mixins{} through \mixinbuilders{}, we
 can obtain \mixinbuilders{} out of each \(b_i\) by function composition.
 
-\subsection{\HB{} classes and structures}
+\subsection{Classes and structures}
 \label{sec:hb-class-struct}
 
 
@@ -1063,7 +1063,7 @@ The same mechanism of canonical structures let us extend the unifier to solve \(
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The implementation in Coq-Elpi}\label{sec:implementation}
+\section{The implementation of \HB{} in Coq-Elpi}\label{sec:implementation}
 
 The implementation is based on the Elpi
 extension language for Coq. In this section we introduce the features of the
