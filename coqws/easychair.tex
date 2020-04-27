@@ -128,7 +128,7 @@ In this talk we focus on how to use \HB{} in a Coq development, and we plan
 to not detail how it works behind the scenes, unless specific questions
 arise from the audience.
 
-\paragraph{A hierarchy with a diamond in 50 lines}
+\paragraph{Example: A hierarchy with a diamond in \HB{}}
 
 \begin{coqcode}
 HB.mixin Record CMonoid_of_Type A := { (* The set of axioms making A a commutative monoid. *)
@@ -210,13 +210,14 @@ Check forall x : Z, x * - (1 + x) = 0 + 1.
 \end{coqcode}
 
 For space constraints we omit the declaration
-of the green arrows (Figure 1) which are alternative interfaces
-called factories. They provide specialized interfaces to build structures for others.
+of the green arrows in Figure 1 which are alternative interfaces
+called factories. They provide specialized interfaces to
+build structures for others.
 Factories are used to accommodate the insertion of
 intermediate structures in a hierarchy without breaking user code, as we all
 as to implement shortcuts: the factory to build a \coq{Ring} from \coq{Type}
 (rightmost green arrow)
-can omit the one for the commutativity of the addition, since it is implied
+can omit the commutativity axiom of the addition, since it is implied
 by the other axioms~\cite{nearrings}.
 \bibliography{biblio}
 
