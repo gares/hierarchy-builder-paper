@@ -914,8 +914,9 @@ In the flat variant of Packed Classes, a class record gathers mixins as its
 fields directly as in above. In contrast, a class record of the non-flat variant
 packs a class instance of one of the superclasses with remaining mixins, which
 reduces the amount of code to implement inheritance significantly.
-Nested class records and chains of their projections exponentially slow down the
-conversion while the flat variant can mitigate the issue. Since we do not need
+%Nested class records and chains of their projections exponentially slow down the
+%conversion while the flat variant can mitigate the issue. 
+Since we do not need
 to care about the amount of code in automated generation, \hb{} uses the flat
 variant of Packed Classes as its target language.
 
