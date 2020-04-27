@@ -10,6 +10,7 @@
 %\documentclass[a4paper]{easychair}
 %\documentclass[letterpaper]{easychair}
 \usepackage{wrapfig}
+\usepackage[font=small,labelfont=bf]{caption}
 
 \usepackage{doc}
 \usepackage{minted} % pip3 install pygments, pdflatex -shell-escape hb
@@ -158,9 +159,7 @@ HB.mixin Record AbelianGrp_of_CMonoid A of CMonoid A := {
   \vspace{1em}
   \includegraphics[width=.35\textwidth]{diagram.pdf}
   \vspace{-1.5em}
-  %\caption{
-    \center{\small{Figure 1: The hierarchy}}
-   % }
+  \caption{The hierarchy}
   \label{fig:hierarchy}
 \end{wrapfigure}
 \
@@ -210,7 +209,7 @@ Check forall x : Z, x * - (1 + x) = 0 + 1.
 \end{coqcode}
 
 For space constraints we omit the declaration
-of the green arrows in Figure 1 which are alternative interfaces
+of the green arrows in Fig.~\ref{fig:hierarchy} which are alternative interfaces
 called factories. They provide specialized interfaces to
 build structures for others.
 Factories are used to accommodate the insertion of
