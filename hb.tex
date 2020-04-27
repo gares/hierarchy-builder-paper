@@ -853,14 +853,16 @@ Definition b : #$f$# T := #$F$# T #\(x_1\ \ldots\ x_n\)#
 \section{The target language: Coq with Packed, flat, Classes}
 \label{sec:target-lang}
 
-The language of packed classes were introduced in
-\cite{DBLP:conf/tphol/GarillotGMR09} and used directly to describe the
-algebraic hierarchy of the Mathematical Components library.
-It is based on a disciplined use of records and projections and
-on the possibility of extending the elaborator of Coq
-via the declaration of Canonical Structures instances.
-In this section we describe the \emph{flat} variant of
-Packed Classes, the target language of \HB{}.
+The language of Packed Classes~\cite{DBLP:conf/tphol/GarillotGMR09} is used
+directly to describe the algebraic hierarchy of the Mathematical Components
+library. It is based on a disciplined use of records and projections and on the
+possibility of extending the elaborator of Coq via the declaration of Canonical
+Structures~\cite{DBLP:conf/itp/MahboubiT13} instances. In this section, we
+describe the \emph{flat} variant of Packed Classes, the target language of
+\hb{}, through the hierarchy V3 extended with semirings.
+
+The \hb{} addon can generate all the Coq declarations in this section
+automatically, but some details are omitted for brevity in this section.
 
 \subsection{Describing structures with records and projections}
 
@@ -897,7 +899,7 @@ Lemma addrA {T : Monoid.type} : associative (@add T).
 
 Next we define Abelian groups.
 Since the monoid structure is the bottom of this hierarchy its class record
-\coq{Monoid} consists just one \mixin{}. In contrast the class record
+\coq{Monoid} consists of just one \mixin{}. In contrast the class record
 of Abelian groups consists of two \mixins{} where the second one depends
  on the former (since Abelian groups inherit from monoids).
 \begin{coqcode}
@@ -908,6 +910,15 @@ Record axioms (T : Type) : Type := Class {
 Structure type : Type := Pack { sort : Type; class : axioms sort }.
 End AbelianGroup.
 \end{coqcode}
+In the flat variant of Packed Classes, a class record gathers mixins as its
+fields directly as in above. In contrast, a class record of the non-flat variant
+packs a class instance of one of the superclasses with remaining mixins, which
+reduces the amount of code to implement inheritance significantly.
+Nested class records and chains of their projections exponentially slow down the
+conversion while the flat variant can mitigate the issue. Since we do not need
+to care about the amount of code in automated generation, \hb{} uses the flat
+variant of Packed Classes as its target language.
+
 As in the monoid structure, we declare \coq{AbelianGroup.sort} as an implicit
 coercion and lift additive inverse \coq{opp} and Abelian group axioms.
 Since Abelian groups inherit from monoids, we also declare an implicit coercion
@@ -934,6 +945,12 @@ Coercion A_to_B (T : A.type) : B.type :=
 \end{coqcode}
 
 \subsection{Multiple inheritance}
+
+\begin{wrapfigure}[6]{r}{.4\textwidth}
+ \includegraphics[width=.4\textwidth]{v4.pdf}
+ \caption{V4 introduces multiple inheritance. For brevity we omit the factories/builders for the upper arrows.}
+ \label{fig:puzzle_v4}
+\end{wrapfigure}
 In order to introduce multiple inheritance, we extend the hierarchy described in
 Section~\ref{subsec:v3} with the structure of semirings %, which is another
 %intermediate structure between monoids and rings
@@ -943,20 +960,13 @@ binary multiplication operator \coq{mul} and its identity element
 Appendix~\ref{sec:full-v4-code}.
 
 \begin{coqcode}
-#\hbmixin{}# Record SemiRing_of_Monoid A of Monoid A := {
+#\hbmixin{}# Record SemiRing_of_Monoid A
+  of Monoid A := {
   one : A;
   mul : A -> A -> A;
   (* 7 axioms are omitted. *)
 }.
-\end{coqcode}
 
-\begin{wrapfigure}[3]{r}{.4\textwidth}
-  \includegraphics[width=.4\textwidth]{v4.pdf}
-  \caption{V4 introduces multiple inheritance. For brevity we omit the factories/builders for the upper arrows.}
-  \label{fig:puzzle_v4}
-\end{wrapfigure}
-\
-\begin{coqcode}
 #\hbfactory{}# Record Ring_of_AbelianGroup A
   of AbelianGroup A := {
   (* 2 operators and 5 axioms are omitted. *)
@@ -966,16 +976,13 @@ Appendix~\ref{sec:full-v4-code}.
 #\hbend{}#.
 \end{coqcode}
 
-
 Since semirings and Abelian groups do not inherit from each other,
 the definition of semirings and Abelian groups are quite similar:
 \begin{coqcode}
 Module SemiRing.
 Record axioms (T : Type) : Type := Class {
-  Monoid_of_Type_mixin :
-    Monoid_of_Type T;
-  SemiRing_of_Monoid_mixin :
-    SemiRing_of_Monoid T Monoid_of_Type_mixin;
+  Monoid_of_Type_mixin : Monoid_of_Type T;
+  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid T Monoid_of_Type_mixin;
 }.
 Structure type : Type := Pack { sort : Type; class : axioms sort; }.
 End SemiRing.
@@ -1017,7 +1024,7 @@ Structures~\cite{DBLP:conf/itp/MahboubiT13,Saibi99phd} mechanism, which
 lets the user extend the elaborator of Coq, in order to handle
 inheritance and inference of structure~\cite{affeldt:hal-02463336,KSdraft,DBLP:conf/tphol/GarillotGMR09}.
 This software component
-takes in input a term as written by the user and has to infer all the missing information that is necessary in order to make the term well typed.
+takes as input a term as written by the user and has to infer all the missing information that is necessary in order to make the term well typed.
 
 A first example of elaboration that requires canonical structures is \(0 + 1\).
 After removing all syntactic facilities, the underlying Coq term is
