@@ -128,7 +128,7 @@ are given in~\cite{cohen:hal-02478907}.
 In this talk we focus on how to use \HB{} in a Coq development,
 % and we plan to not detail how it works behind the scenes, 
 unless questions on its internals arise from the audience.\\
-\HB{} is available for download at \url{https://github.com/math-comp/hierarchy-builder}
+\HB{} is available for download at \url{https://github.com/math-comp/hierarchy-builder}.
 
 \paragraph{Example: A hierarchy with a diamond in \HB{}}
 
@@ -185,25 +185,23 @@ HB.mixin Record SemiRing_of_CMonoid A of CMonoid A := {
 }.
 HB.structure Definition SemiRing := { A of SemiRing_of_CMonoid A & }.
 Notation "1"  := one.
-Notation "-1" := (- one).
 Infix    "*"  := mul.
 
-(* A statement in the signature of a `SemiRing` S.  *)
+(* A statement in the signature of a Semiring S.  *)
 Check forall S : SemiRing.type, forall x : S, x * 1 + 0 = x.
 
-(* We need no additional mixin to declare the `Ring` structure. *)
+(* We need no additional mixin to declare the Ring structure. *)
 HB.structure Definition Ring := { A of SemiRing_of_CMonoid A & AbelianGrp_of_CMonoid A }.
 
 (* A statement in the signature of a Ring R.  *)
-Check forall R : Ring.type, forall x : R, x * -1 = - x.
+Check forall R : Ring.type, forall x : R, x * - (1) = - x.
 
-(* We equip Z with the structures of CMonoid, AbelianGrp and SemiRing; HB equips it with Ring. *)
+(* We equip Z with CMonoid, AbelianGrp and SemiRing structures; HB equips it with Ring. *)
 Definition Z_CMonoid    := CMonoid_of_Type.Build Z 0%Z Z.add Z.add_assoc Z.add_comm Z.add_0_l.
 HB.instance Z Z_CMonoid.
 Definition Z_AbelianGrp := AbelianGrp_of_CMonoid.Build Z Z.opp Z.add_opp_diag_l.
 HB.instance Z Z_AbelianGrp.
-Definition Z_SemiRing   := SemiRing_of_CMonoid.Build Z 1%Z Z.mul Z.mul_assoc Z.mul_1_l
-  Z.mul_1_r Z.mul_add_distr_r Z.mul_add_distr_l (fun _ => erefl) Zmult_0_r.
+Definition Z_SemiRing   := SemiRing_of_CMonoid.Build Z 1%Z Z.mul Z.mul_assoc Z.mul_1_l ...
 HB.instance Z Z_SemiRing.
 
 (* A statement in the signature of the Z ring *)
