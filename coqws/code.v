@@ -21,7 +21,6 @@ HB.mixin Record AbelianGrp_of_CMonoid A of CMonoid A := {
   opp   : A -> A;
   addNr : left_inverse zero opp add; (* `opp` is the additive inverse *)
 }.
-
 HB.structure Definition AbelianGrp := { A of AbelianGrp_of_CMonoid A & }.
 Notation "- x"   := (opp x).
 Notation "x - y" := (add x (opp y)).
@@ -42,7 +41,6 @@ HB.mixin Record SemiRing_of_CMonoid A of CMonoid A := {
 }.
 HB.structure Definition SemiRing := { A of SemiRing_of_CMonoid A & }.
 Notation "1"  := one.
-Notation "-1" := (- one).
 Infix    "*"  := mul.
 
 (* A statement in the signature of a `SemiRing` S.  *)
@@ -52,7 +50,7 @@ Check forall S : SemiRing.type, forall x : S, x * 1 + 0 = x.
 HB.structure Definition Ring := { A of SemiRing_of_CMonoid A & AbelianGrp_of_CMonoid A }.
 
 (* A statement in the signature of a Ring R.  *)
-Check forall R : Ring.type, forall x : R, x * -1 = - x.
+Check forall R : Ring.type, forall x : R, x * - (1) = - x.
 
 (* We equip Z with the structures of CMonoid, AbelianGrp and SemiRing; HB equips it with Ring. *)
 Definition Z_CMonoid    := CMonoid_of_Type.Build Z 0%Z Z.add Z.add_assoc Z.add_comm Z.add_0_l.
