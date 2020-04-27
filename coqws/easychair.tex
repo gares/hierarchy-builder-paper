@@ -209,12 +209,12 @@ Check forall x : Z, x * - (1 + x) = 0 + 1.
 \end{coqcode}
 
 For space constraints we omit the declaration
-of the green arrows in Fig.~\ref{fig:hierarchy} which are alternative interfaces
+of the green arrows in Figure~\ref{fig:hierarchy} which are alternative interfaces
 called factories. They provide specialized interfaces to
-build structures for others.
+build structures from others.
 Factories are used to accommodate the insertion of
-intermediate structures in a hierarchy without breaking user code, as we all
-as to implement shortcuts: the factory to build a \coq{Ring} from \coq{Type}
+intermediate structures in a hierarchy without breaking user code, as well
+as to implement shortcuts: e.g. the factory to build a \coq{Ring} from a \coq{Type}
 (rightmost green arrow)
 can omit the commutativity axiom of the addition, since it is implied
 by the other axioms~\cite{nearrings}.
