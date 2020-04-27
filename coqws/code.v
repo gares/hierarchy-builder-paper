@@ -22,7 +22,6 @@ HB.mixin Record AbelianGrp_of_CMonoid A of CMonoid A := {
   addNr : left_inverse zero opp add; (* `opp` is the additive inverse *)
 }.
 
-
 HB.structure Definition AbelianGrp := { A of AbelianGrp_of_CMonoid A & }.
 Notation "- x"   := (opp x).
 Notation "x - y" := (add x (opp y)).
