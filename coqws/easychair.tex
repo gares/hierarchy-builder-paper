@@ -187,11 +187,11 @@ HB.structure Definition SemiRing := { A of SemiRing_of_CMonoid A & }.
 Notation "1" := one.
 Infix    "*" := mul.
 
-(* A statement in the signature of a Semiring S.  *)
+(* A statement in the signature of a `SemiRing` S.  *)
 Check forall S : SemiRing.type, forall x : S, x * 1 + 0 = x.
 
-(* We need no additional mixin to declare the structure of rings. *)
-HB.structure Definition SemiRing := { A of SemiRing_of_CMonoid A & AbelianGrp_of_CMonoid A & }.
+(* We need no additional mixin to declare the `Ring` structure. *)
+HB.structure Definition Ring := { A of SemiRing_of_CMonoid A & AbelianGrp_of_CMonoid A & }.
 
 (* A statement in the signature of a Ring R.  *)
 Check forall R : Ring.type, forall x : R, x * -1 = - x.
