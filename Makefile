@@ -1,5 +1,7 @@
 zip:
-	zip hb.zip \
+	rm -rf hb-final
+	mkdir -p hb-final
+	cp \
 		biblio.bib \
 		cc-by.pdf \
 		elpi.py \
@@ -8,4 +10,6 @@ zip:
 		lipics-v2019.cls \
 		orcid.pdf \
 		puzzle.pdf \
-		v4.pdf
+		v4.pdf \
+		hb-final
+	zip -r hb.zip hb-final
