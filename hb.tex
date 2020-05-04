@@ -250,19 +250,19 @@ The first version of our hierarchy (that we name V1) features only two
 structures: \coq{Monoid} and \coq{Ring}. We use notations from Appendix~\ref{sec:coq-reference} to define them.
 %\marginpar{remove hb.end for \mixins{}, use next release of coq elpi}
 \begin{coqcode}
-#\hbmixin{}# Record Monoid_of_Type A := {                       #\label{demo:mixin:mot}#
-  zero : A;
-  add : A -> A -> A;
+#\hbmixin{}# Record Monoid_of_Type M := {                       #\label{demo:mixin:mot}#
+  zero : M;
+  add : M -> M -> M;
   addrA : associative add;             (* `add` is associative.                   *)
   add0r : left_id zero add;            (* `zero` is the left and right neutral    *)
   addr0 : right_id zero add;           (*   element with respect to `add`.        *)
 }.                                                             #\label{demo:mixin:mot:end}#
-#\hbstructure{}# Definition Monoid := { A of Monoid_of_Type A }.        #\label{demo:structure:monoid}#
+#\hbstructure{}# Definition Monoid := { M of Monoid_of_Type M }.        #\label{demo:structure:monoid}#
 
-#\hbmixin{}# Record Ring_of_Monoid A of Monoid A := {       #\label{demo:mixin:rom}#
-  one : A;
-  opp : A -> A;
-  mul : A -> A -> A;
+#\hbmixin{}# Record Ring_of_Monoid R of Monoid R := {       #\label{demo:mixin:rom}#
+  one : R;
+  opp : R -> R;
+  mul : R -> R -> R;
   addNr : left_inverse zero opp add;   (* `opp x` is the left and right additive  *)
   addrN : right_inverse zero opp add;  (*   inverse of `x`.                       *)
   mulrA : associative mul;             (* `mul` is associative.                   *)
@@ -271,7 +271,7 @@ structures: \coq{Monoid} and \coq{Ring}. We use notations from Appendix~\ref{sec
   mulrDl : left_distributive mul add;  (* `mul` is left and right distributive    *)
   mulrDr : right_distributive mul add; (*   over `add`.                           *)
 }.
-#\hbstructure{}# Definition Ring := { A of Monoid A & Ring_of_Monoid A }. #\label{demo:structure:ring}#
+#\hbstructure{}# Definition Ring := { R of Monoid R & Ring_of_Monoid R }. #\label{demo:structure:ring}#
 
 \end{coqcode}
 
@@ -285,19 +285,19 @@ that takes a record declaration with
 a type parameter and a possibly empty list of \factories{} for that type.
 The code between lines~\ref{demo:mixin:mot}
 and~\ref{demo:mixin:mot:end} declares a \mixin{} that can turn a naked
-type \coq{A} into a monoid, hence we chose the name to be \coq{Monoid_of_Type}.
+type \coq{M} into a monoid, hence we chose the name to be \coq{Monoid_of_Type}.
 
-The \hbstructure{} command takes in input a definition for a sigma type S
-that equips \coq{A} with a list of \factories{}.
-It registers a structure S in the hierarchy placing
+The \hbstructure{} command takes in input a definition for a sigma type \coq{S}
+that equips a type with a list of \factories{}.
+It registers a structure \coq{S} in the hierarchy placing
 any definition specific to that structure inside a Coq module named \coq{S}.
 Line~\ref{demo:structure:monoid} hence forges the \coq{Monoid} structure.
 
 Line~\ref{demo:mixin:rom} declares a second \mixin{} collecting the operations
 and properties that are needed in order to enrich a monoid to a ring, hence
-the name \coq{Ring_of_Monoid}. Indeed this time the type variable \coq{A}
+the name \coq{Ring_of_Monoid}. Indeed this time the type variable \coq{R}
 is followed by \coq{Monoid} that enriches
-\coq{A} with the operations and properties of monoids. As a consequence
+\coq{R} with the operations and properties of monoids. As a consequence
 \coq{add} and \coq{zero} can be used to express the new properties.
 
 The last line declares the \coq{Ring} structure to hold all the axioms declared
@@ -337,7 +337,7 @@ constants synthesized by \HB{} out of the hierarchy declaration. Remark that
 while the names of the constants come from the names of \mixin{} fields,
 their types differ.
 In particular they are quantified over a \coq{Monoid.type} or \coq{Ring.type},
-and not a simple type \coq{A} as in the \mixins{}. Moreover we evince that
+and not a simple type as in the \mixins{}. Moreover we evince that
 the \coq{sort} projection is declared as an implicit coercion~\cite{Saibi97}
 and is automatically inserted in order to make \coq{M -> M -> M} a meaningful
 type for binary operations on the carrier of \coq{M}. Last, we see that
@@ -382,8 +382,8 @@ We proceed by accommodating the intermediate
 structure of Abelian groups.
 
 \begin{coqcode}
-#\hbmixin{}# Record Monoid_of_Type A := { ... (* unchanged *) ... }.
-#\hbstructure{}# Definition Monoid := { A of Monoid_of_Type A }.
+#\hbmixin{}# Record Monoid_of_Type M := { ... (* unchanged *) ... }.
+#\hbstructure{}# Definition Monoid := { M of Monoid_of_Type M }.
 
 #\hbmixin{}# Record AbelianGroup_of_Monoid A of Monoid A := {
   opp : A -> A;
@@ -392,24 +392,24 @@ structure of Abelian groups.
 }.
 #\hbstructure{}# Definition AbelianGroup := { A of Monoid A & AbelianGroup_of_Monoid A }.
 
-#\hbmixin{}# Record Ring_of_AbelianGroup A of AbelianGroup A := {
-  one : A;
-  mul : A -> A -> A;
+#\hbmixin{}# Record Ring_of_AbelianGroup R of AbelianGroup R := {
+  one : R;
+  mul : R -> R -> R;
   mulrA : associative mul;
   mul1r : left_id one mul;              mulr1 : right_id one mul;
   mulrDl : left_distributive mul add;   mulrDr : right_distributive mul add;
 }.
-#\hbstructure{}# Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
+#\hbstructure{}# Definition Ring := { R of AbelianGroup R & Ring_of_AbelianGroup R }.
 
-Lemma addrN {R : AbelianGroup.type} : right_inverse zero opp add.               #\label{demo2:proof:addrN}#
-Proof. by move=>x; rewrite addrC addNr. Qed.
+Lemma addrN {A : AbelianGroup.type} : right_inverse zero opp add.               #\label{demo2:proof:addrN}#
+Proof. by move=> x; rewrite addrC addNr. Qed.
 \end{coqcode}
 
 Some operations and properties were moved from the old \mixin{} for rings
 into a newborn \mixin{} \coq{AbelianGroup_of_Monoid} that gathers the
 axioms needed to turn a monoid into an Abelian group. Consequently the \mixin{}
 for rings is now called \coq{Ring_of_AbelianGroup} (instead of \coq{Ring_of_Monoid})
-since it expects the type \coq{A} to be already an Abelian group and hence
+since it expects the type \coq{R} to be already an Abelian group and hence
 gathers fewer axioms.
 While operations moved from one structure to another, some properties
 undergo a deep change in their status.
@@ -468,19 +468,19 @@ will look indistinguishable from the old \coq{Ring_of_Monoid} \mixin{}
 and hence grant backward compatibility between version V3 and version V1.
 
 \begin{coqcode}
-#\hbfactory{}# Record Ring_of_Monoid A of Monoid A := { ... (* unchanged *) ...}.
+#\hbfactory{}# Record Ring_of_Monoid R of Monoid R := { ... (* unchanged *) ...}.
 
-#\hbbuilders{}# Context A (f : Ring_of_Monoid A).                          #\label{demo3:variable:f}#
+#\hbbuilders{}# Context R (f : Ring_of_Monoid R).                          #\label{demo3:variable:f}#
 
   Lemma addrC : commutative add. Proof. (* The same proof as before *) Qed.
 
   Definition to_AbelianGroup_of_Monoid :=
-    AbelianGroup_of_Monoid.Build A (opp f) addrC (addNr f). (* addrN unused *)
-  #\hbinstance{}# A to_AbelianGroup_of_Monoid.
+    AbelianGroup_of_Monoid.Build R opp addrC addNr. (* addrN unused *)
+  #\hbinstance{}# R to_AbelianGroup_of_Monoid.
 
-  Definition to_Ring_of_AbelianGroup :=  Ring_of_AbelianGroup.Build A
-    (one f) (mul f) (mulrA f) (mul1r f) (mulr1 f) (mulrDl f) (mulrDr f).
-  #\hbinstance{}# A to_Ring_of_AbelianGroup.
+  Definition to_Ring_of_AbelianGroup := Ring_of_AbelianGroup.Build R one mul
+    mulrA mul1r mulr1 mulrDl mulrDr.
+  #\hbinstance{}# R to_Ring_of_AbelianGroup.
 
 #\hbend{}#.
 \end{coqcode}
@@ -491,9 +491,9 @@ two definitions that embody the \emph{\builder{}s}.
 The first is \coq{to_AbelianGroup_of_Monoid} and
 explains how to build an \coq{AbelianGroup} structure out of the \factory{}
 axioms (named \coq{f}, line~\ref{demo3:variable:f}).
-This construction is also registered as canonical for \coq{A},
+This construction is also registered as canonical for \coq{R},
 so that the next construction \coq{to_Ring_of_AbelianGroup} can call
-the \coq{Ring_of_AbelianGroup.Build} \phantterm{} that requires \coq{A} to be
+the \coq{Ring_of_AbelianGroup.Build} \phantterm{} that requires \coq{R} to be
 an \coq{AbelianGroup}.
 It is worth pointing out that the proof of \coq{addrC} we had in V1 is now
 required in order to write the \builder{} for Abelian groups, while
@@ -521,8 +521,8 @@ two lines equivalent (the former declares
 rings in V1) since they both describe the same set of \mixins{}.
 
 \begin{coqcode}
-#\hbstructure{}# Definition Ring := { A of Monoid A & Ring_of_Monoid A }.
-#\hbstructure{}# Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }.
+#\hbstructure{}# Definition Ring := { R of Monoid R & Ring_of_Monoid R }.
+#\hbstructure{}# Definition Ring := { R of AbelianGroup R & Ring_of_AbelianGroup R }.
 \end{coqcode}
 
 This is another example of client code that would not break: the client of the hierarchy is allowed to declare new
@@ -872,8 +872,8 @@ As shown in Section \ref{sec:example}, a \mixin{} gathers operators and axioms n
 As in \cite[Section 2.4]{DBLP:conf/tphol/GarillotGMR09}\cite[Section 2]{KSdraft}, a class record is parametrized by the carrier type \coq{(T : Type)} and gathers all the operators and axioms of a structure by assembling mixins, and a \coq{Structure type} (a record) bundles a carrier and its class instance, as follows.
 \begin{coqcode}
 Module Monoid.
-Record axioms (T : Type) : Type :=
-  Class { Monoid_of_Type_mixin : Monoid_of_Type T; }.
+Record axioms (M : Type) : Type :=
+  Class { Monoid_of_Type_mixin : Monoid_of_Type M; }.
 Structure type : Type := Pack { sort : Type; class : axioms sort; }.
 End Monoid.
 \end{coqcode}
@@ -890,11 +890,11 @@ the monoid \mixin{} to definitions and lemmas for \coq{Monoid.type} as follows.
 \begin{coqcode}
 Coercion Monoid.sort : Monoid.type >-> Sortclass.
 
-Definition zero {T : Monoid.type} : T :=
-  Monoid_of_Type.zero T (Monoid.Monoid_of_Type_mixin T (Monoid.class T)).
-Definition add {T : Monoid.type} : T -> T -> T :=
-  Monoid_of_Type.add T (Monoid.Monoid_of_Type_mixin T (Monoid.class T)).
-Lemma addrA {T : Monoid.type} : associative (@add T).
+Definition zero {M : Monoid.type} : M :=
+  Monoid_of_Type.zero M (Monoid.Monoid_of_Type_mixin M (Monoid.class M)).
+Definition add {M : Monoid.type} : M -> M -> M :=
+  Monoid_of_Type.add M (Monoid.Monoid_of_Type_mixin M (Monoid.class M)).
+Lemma addrA {M : Monoid.type} : associative (@add M).
 (* Two monoid axioms `add0r` and `addr0` are omitted. *)
 \end{coqcode}
 
@@ -905,9 +905,9 @@ of Abelian groups consists of two \mixins{} where the second one depends
  on the former (since Abelian groups inherit from monoids).
 \begin{coqcode}
 Module AbelianGroup.
-Record axioms (T : Type) : Type := Class {
-  Monoid_of_Type_mixin : Monoid_of_Type T;
-  AbelianGroup_of_Monoid_mixin : AbelianGroup_of_Monoid T Monoid_of_Type_mixin; }.
+Record axioms (A : Type) : Type := Class {
+  Monoid_of_Type_mixin : Monoid_of_Type A;
+  AbelianGroup_of_Monoid_mixin : AbelianGroup_of_Monoid A Monoid_of_Type_mixin; }.
 Structure type : Type := Pack { sort : Type; class : axioms sort }.
 End AbelianGroup.
 \end{coqcode}
@@ -931,19 +931,19 @@ and a coercion between
 structure records (line~\ref{demo4:coe:ag:monoid:type}) relying on the first one.
 \begin{coqcode}
 Coercion AbelianGroup.sort : AbelianGroup.type >-> Sortclass.
-Coercion AbelianGroup_class_to_Monoid_class (T : Type) (c : AbelianGroup T) : #\label{demo4:coe:ag:monoid:class}#
-  Monoid T := Monoid.Class T (AbelianGroup.Monoid_of_Type_mixin T c).
-Coercion AbelianGroup_to_Monoid (T : AbelianGroup.type) : Monoid.type := #\label{demo4:coe:ag:monoid:type}#
-  Monoid.Pack (AbelianGroup.sort T) (AbelianGroup.class T).
+Coercion AbelianGroup_class_to_Monoid_class (A : Type) (c : AbelianGroup A) : #\label{demo4:coe:ag:monoid:class}#
+  Monoid A := Monoid.Class A (AbelianGroup.Monoid_of_Type_mixin A c).
+Coercion AbelianGroup_to_Monoid (A : AbelianGroup.type) : Monoid.type := #\label{demo4:coe:ag:monoid:type}#
+  Monoid.Pack (AbelianGroup.sort A) (AbelianGroup.class A).
 
-Definition opp {T : AbelianGroup.type} : T -> T := ... .
+Definition opp {A : AbelianGroup.type} : A -> A := ... .
 (* Two Abelian group axioms `addrC` and `addNr` are omitted. *)
 \end{coqcode}
 
-Generally, a coercion from a structure A to another structure B can (and should) have the following form, thanks to the corresponding coercion between classes \coq{A_class_to_B_class}.
+Generally, a coercion from a structure X to another structure Y can (and should) have the following form, thanks to the corresponding coercion between classes \coq{X_class_to_Y_class}.
 \begin{coqcode}
-Coercion A_to_B (T : A.type) : B.type :=
-  B.Pack (A.sort T) ((* A_class_to_B_class _ *) (A.class T)).
+Coercion X_to_Y (T : X.type) : Y.type :=
+  Y.Pack (X.sort T) ((* X_class_to_Y_class _ *) (X.class T)).
 \end{coqcode}
 
 \subsection{Multiple inheritance}
@@ -962,18 +962,18 @@ binary multiplication operator \coq{mul} and its identity element
 Appendix~\ref{sec:full-v4-code}.
 
 \begin{coqcode}
-#\hbmixin{}# Record SemiRing_of_Monoid A
-  of Monoid A := {
-  one : A;
-  mul : A -> A -> A;
+#\hbmixin{}# Record SemiRing_of_Monoid S
+  of Monoid S := {
+  one : S;
+  mul : S -> S -> S;
   (* 7 axioms are omitted. *)
 }.
 
-#\hbfactory{}# Record Ring_of_AbelianGroup A
-  of AbelianGroup A := {
+#\hbfactory{}# Record Ring_of_AbelianGroup R
+  of AbelianGroup R := {
   (* 2 operators and 5 axioms are omitted. *)
 }.
-#\hbbuilders{}# Context A (a : Ring_of_AbelianGroup A).
+#\hbbuilders{}# Context R (f : Ring_of_AbelianGroup R).
 ..
 #\hbend{}#.
 \end{coqcode}
@@ -982,9 +982,9 @@ Since semirings and Abelian groups do not inherit from each other,
 the definition of semirings and Abelian groups are quite similar:
 \begin{coqcode}
 Module SemiRing.
-Record axioms (T : Type) : Type := Class {
-  Monoid_of_Type_mixin : Monoid_of_Type T;
-  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid T Monoid_of_Type_mixin;
+Record axioms (S : Type) : Type := Class {
+  Monoid_of_Type_mixin : Monoid_of_Type S;
+  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid S Monoid_of_Type_mixin;
 }.
 Structure type : Type := Pack { sort : Type; class : axioms sort; }.
 End SemiRing.
@@ -995,8 +995,8 @@ and the monoid structure, and we lift semiring operators and axioms as follows:
 Coercion SemiRing.sort : SemiRing.type >-> Sortclass.
 Coercion SemiRing_to_Monoid : SemiRing.type >-> Monoid.type.
 
-Definition one {T : SemiRing.type} : T := ... .
-Definition mul {T : SemiRing.type} : T -> T -> T := ... .
+Definition one {S : SemiRing.type} : S := ... .
+Definition mul {S : SemiRing.type} : S -> S -> S := ... .
 (* 7 semiring axioms are omitted. *)
 \end{coqcode}
 
@@ -1006,10 +1006,10 @@ Abelian groups, we define implicit coercions from the ring structure to those
 three structures.
 \begin{coqcode}
 Module Ring.
-Record axioms (T : Type) : Type := Class {
-  Monoid_of_Type_mixin : Monoid_of_Type T;
-  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid T Monoid_of_Type_mixin;
-  AbelianGroup_of_Monoid_mixin : AbelianGroup_of_Monoid T Monoid_of_Type_mixin; }.
+Record axioms (R : Type) : Type := Class {
+  Monoid_of_Type_mixin : Monoid_of_Type R;
+  SemiRing_of_Monoid_mixin : SemiRing_of_Monoid R Monoid_of_Type_mixin;
+  AbelianGroup_of_Monoid_mixin : AbelianGroup_of_Monoid R Monoid_of_Type_mixin; }.
 Structure type : Type := Pack { sort : Type; class : axioms sort; }.
 End Ring.
 
@@ -1063,8 +1063,8 @@ rings; thus we have to extend the unifier to solve a unification problem
 \(\coq{AbelianGroup.sort}~?_{\texttt{AbG}}~\coq{= SemiRing.sort}~?_{\texttt{SR}}\) by instantiating \(?_{\texttt{AbG}}\) and \(?_{\texttt{SR}}\) with \(\coq{Ring_to_AbelianGroup}~?_{\texttt{R}}\) and \(\coq{Ring_to_SemiRing}~?_{\texttt{R}}\) respectively where \(?_{\texttt{R}}\) is a fresh unification variable of type \coq{Ring.type}.
 This hint can be given as follows:% can be done by the following canonical declaration.
 \begin{coqcode}
-Canonical AbelianGroup_to_SemiRing (T : Ring.type) :=
-  SemiRing.Pack (AbelianGroup.sort (Ring_to_AbelianGroup T)) (Ring.class T)).
+Canonical AbelianGroup_to_SemiRing (S : Ring.type) :=
+  SemiRing.Pack (AbelianGroup.sort (Ring_to_AbelianGroup S)) (Ring.class S)).
 \end{coqcode}
 
 Similarly, one can apply an algebraic theory to an instance (an example) of that structure, e.g., \(2 \times 3\) where \(2\) and \(3\) have type \(\mathbb{Z}\).
@@ -1457,14 +1457,14 @@ Delimit Scope hb_scope with G.
 Open Scope hb_scope.
 
 (* Bottom mixin in Fig. 2. *)
-HB.mixin Record Monoid_of_Type A := {
-  zero : A;
-  add : A -> A -> A;
+HB.mixin Record Monoid_of_Type M := {
+  zero : M;
+  add : M -> M -> M;
   addrA : associative add;
   add0r : left_id zero add;
   addr0 : right_id zero add;
 }.
-HB.structure Definition Monoid := { A of Monoid_of_Type A }.
+HB.structure Definition Monoid := { M of Monoid_of_Type M }.
 Notation "0" := zero : hb_scope.
 Infix "+" := (@add _) : hb_scope.
 
@@ -1479,9 +1479,9 @@ Notation "- x" := (@opp _ x) : hb_scope.
 Notation "x - y" := (x + - y) : hb_scope.
 
 (* Bottom left mixin in Fig. 2. *)
-HB.mixin Record SemiRing_of_Monoid A of Monoid A := {
-  one : A;
-  mul : A -> A -> A;
+HB.mixin Record SemiRing_of_Monoid S of Monoid S := {
+  one : S;
+  mul : S -> S -> S;
   mulrA : associative mul;
   mul1r : left_id one mul;
   mulr1 : right_id one mul;
@@ -1490,17 +1490,17 @@ HB.mixin Record SemiRing_of_Monoid A of Monoid A := {
   mul0r : left_zero zero mul;
   mulr0 : right_zero zero mul;
 }.
-HB.structure Definition SemiRing := { A of Monoid A & SemiRing_of_Monoid A }.
+HB.structure Definition SemiRing := { S of Monoid S & SemiRing_of_Monoid S }.
 Notation "1" := one : hb_scope.
 Infix "*" := (@mul _) : hb_scope.
 
-Lemma addrN {R : AbelianGroup.type} : right_inverse (zero : R) opp add.
+Lemma addrN {A : AbelianGroup.type} : right_inverse (zero : A) opp add.
 Proof. by move=> x; rewrite addrC addNr. Qed.
 
 (* Top right factory in Fig. 2. *)
-HB.factory Record Ring_of_AbelianGroup A of AbelianGroup A := {
-  one : A;
-  mul : A -> A -> A;
+HB.factory Record Ring_of_AbelianGroup R of AbelianGroup R := {
+  one : R;
+  mul : R -> R -> R;
   mulrA : associative mul;
   mul1r : left_id one mul;
   mulr1 : right_id one mul;
@@ -1534,18 +1534,18 @@ HB.structure Definition Ring := { A of AbelianGroup A & Ring_of_AbelianGroup A }
 
 (* Top left factory in Fig. 2. *)
 (* It is an exact copy of the bottom right mixin. *)
-HB.factory Definition Ring_of_SemiRing A of SemiRing A := AbelianGroup_of_Monoid A.
+HB.factory Definition Ring_of_SemiRing R of SemiRing R := AbelianGroup_of_Monoid R.
 (* The corresponding builder is the identity. *)
-HB.builders Context (A : Type) (f : Ring_of_SemiRing A).
-  Definition to_AbelianGroup_of_Monoid : AbelianGroup_of_Monoid A := f.
-  HB.instance A to_AbelianGroup_of_Monoid.
+HB.builders Context (R : Type) (f : Ring_of_SemiRing R).
+  Definition to_AbelianGroup_of_Monoid : AbelianGroup_of_Monoid R := f.
+  HB.instance R to_AbelianGroup_of_Monoid.
 HB.end.
 
 (* Right-most factory in Fig. 2. *)
-HB.factory Record Ring_of_Monoid A of Monoid A := {
-  one : A;
-  opp : A -> A;
-  mul : A -> A -> A;
+HB.factory Record Ring_of_Monoid R of Monoid R := {
+  one : R;
+  opp : R -> R;
+  mul : R -> R -> R;
   addNr : left_inverse zero opp add;
   addrN : right_inverse zero opp add;
   mulrA : associative mul;
