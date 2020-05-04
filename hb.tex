@@ -311,16 +311,16 @@ Print Monoid.type. (* Monoid.type  :=  { sort : Type;  ... }                    
 Check @add.        (* add          :   forall M : Monoid.type, M -> M -> M             *) #\label{demo:theory:check:add}#
 Check @addNr.      (* addNr        :   forall R : Ring.type, left_inverse zero opp add *) #\label{demo:theory:check:addNr}#
 
-Lemma addrC : forall R : Ring.type, commutative (@add R).                       #\label{demo:theory:state:addrC}#
+Lemma addrC {R : Ring.type} : commutative (@add R).                       #\label{demo:theory:state:addrC}#
 Proof. (* Proof by Hankel 1867, in Appendix B *) Qed.
 
 Definition Z_Monoid_axioms : Monoid_of_Type Z :=                         #\label{demo:theory:z:monoid:axioms}#
-  Monoid_of_Type.Build Z 0 Z.add Z.add_assoc Z.add_0_l Z.add_0_r.
+  Monoid_of_Type.Build Z 0%Z Z.add Z.add_assoc Z.add_0_l Z.add_0_r.
 
 #\hbinstance{}# Z Z_Monoid_axioms.                                            #\label{demo:theory:z:monoid:canonical}#
 
 Definition Z_Ring_axioms : Ring_of_Monoid Z :=                        #\label{demo:theory:z:ring:axioms}#
-  Ring_of_Monoid.Build Z 1 Z.opp Z.mul
+  Ring_of_Monoid.Build Z 1%Z Z.opp Z.mul
     Z.add_opp_diag_l Z.add_opp_diag_r Z.mul_assoc Z.mul_1_l Z.mul_1_r
     Z.mul_add_distr_r Z.mul_add_distr_l.
 
@@ -1433,13 +1433,13 @@ End OperationProperties.
 \begin{coqcode}
 Lemma addrC {R : Ring.type} : commutative (@add R).
 Proof.
-have innerC (a b : R) : (a + b) + (a + b) = (a + a) + (b + b).
+have innerC (a b : R) : a + b + (a + b) = a + a + (b + b).
   by rewrite -[a+b]mul1r -mulrDl mulrDr !mulrDl !mul1r.
 have addKl (a b c : R) : a + b = a + c -> b = c.
-  apply: can_inj (add a) (add (-a)) _ _ _.
+  apply: can_inj (add a) (add (opp a)) _ _ _.
   by move=> x; rewrite addrA addNr add0r.
 have addKr (a b c : R) : b + a = c + a -> b = c.
-  apply: can_inj (add ^~ a) (add ^~ (-a)) _ _ _.
+  apply: can_inj (add ^~ a) (add ^~ (opp a)) _ _ _.
   by move=> x; rewrite /= -addrA addrN addr0.
 move=> x y; apply: addKl (x) _ _ _; apply: addKr (y) _ _ _.
 by rewrite -!addrA [in RHS]addrA innerC !addrA.
@@ -1555,16 +1555,16 @@ HB.factory Record Ring_of_Monoid A of Monoid A := {
   mulrDr : right_distributive mul add;
 }.
 
-HB.builders Context (A : Type) (f : Ring_of_Monoid A).
+HB.builders Context (R : Type) (f : Ring_of_Monoid R).
 
-  Lemma addrC : commutative (add : A -> A -> A).
-  Proof.
-  have innerC (a b : A) : a + b + (a + b) = a + a + (b + b).
+  Lemma addrC : commutative (add : R -> R -> R).
+  Proof. (* Exactly the same as in Appendix B. *)
+  have innerC (a b : R) : a + b + (a + b) = a + a + (b + b).
     by rewrite -[a+b]mul1r -mulrDl mulrDr !mulrDl !mul1r.
-  have addKl (a b c : A) : a + b = a + c -> b = c.
+  have addKl (a b c : R) : a + b = a + c -> b = c.
     apply: can_inj (add a) (add (opp a)) _ _ _.
     by move=> x; rewrite addrA addNr add0r.
-  have addKr (a b c : A) : b + a = c + a -> b = c.
+  have addKr (a b c : R) : b + a = c + a -> b = c.
     apply: can_inj (add ^~ a) (add ^~ (opp a)) _ _ _.
     by move=> x; rewrite /= -addrA addrN addr0.
   move=> x y; apply: addKl (x) _ _ _; apply: addKr (y) _ _ _.
@@ -1573,13 +1573,13 @@ HB.builders Context (A : Type) (f : Ring_of_Monoid A).
 
   (* Builder to the bottom right mixin. *)
   Definition to_AbelianGroup_of_Monoid :=
-    AbelianGroup_of_Monoid.Build A opp addrC addNr.
-  HB.instance A to_AbelianGroup_of_Monoid.
+    AbelianGroup_of_Monoid.Build R opp addrC addNr.
+  HB.instance R to_AbelianGroup_of_Monoid.
 
   (* Builder to the top right factory, which is compiled to the bottom left mixin. *)
-  Definition to_Ring_of_AbelianGroup := Ring_of_AbelianGroup.Build A one mul
+  Definition to_Ring_of_AbelianGroup := Ring_of_AbelianGroup.Build R one mul
     mulrA mul1r mulr1 mulrDl mulrDr.
-  HB.instance A to_Ring_of_AbelianGroup.
+  HB.instance R to_Ring_of_AbelianGroup.
 
 HB.end.
 \end{coqcode}
