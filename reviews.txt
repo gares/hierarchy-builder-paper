@@ -243,7 +243,7 @@ Minor things
 Section 4: Please explain (briefly) the difference between *flat* Packed
 Classes and the standard Packed Classes.
 
-=KS= add a sentence to page 10 after Module AbelianGroup describing the
+=DONE= add a sentence to page 10 after Module AbelianGroup describing the
    "flat" variant of PC
 
 p10 l288: consists [of] just one mixin

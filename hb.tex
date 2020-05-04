@@ -126,6 +126,7 @@
 \newcommand{\enum}[2]{\ensuremath{\set{#1,\ldots,#2}}}
 \newcommand{\vect}[1]{\overrightarrow{#1}}
 \newcommand{\pmp}[1]{\ensuremath{\vect{\left(p : m\ T\ p_\sigma\right)}^{#1}}}
+\newcommand{\aux}{\mathit{aux}}
 \newcommand{\hbmixin}{{\tt\color{dkgreen}HB.mixin}}
 \newcommand{\hbfactory}{{\tt\color{dkgreen}HB.factory}}
 \newcommand{\hbinstance}{{\tt\color{dkgreen}HB.instance}}
@@ -371,9 +372,9 @@ declaration given just above.
 From now on the axioms as well as the abstract theory of rings apply to
 integers, as shown in lemma \coq{exercise}. The details of the proof
 do not matter here, what is worth pointing out is that in a single
-statement we mix monoid (e.g. \coq{+}) and ring (e.g. \coq{-}) operations and in the
-proof we use monoid axioms (e.g. \coq{addrA}), ring axioms
-(e.g. \coq{addrN}) and ring lemmas (e.g. \coq{addrC}), all seamlessly.
+statement we mix monoid (e.g.~\coq{+}) and ring (e.g.~\coq{-}) operations and in the
+proof we use monoid axioms (e.g.~\coq{addrA}), ring axioms
+(e.g.~\coq{addrN}) and ring lemmas (e.g.~\coq{addrC}), all seamlessly.
 
 \subsection{Evolution of the hierarchy}\label{subsec:evolution}
 
@@ -584,14 +585,14 @@ Record #$m$# (T : Type) #\(\pmp{n}\)# : Type := { .. }.
 where \(\pmp{n} = (p_1 : m_1\ T) \ldots \left(p_n : m_n\ T\ p_{\sigma(n,1)}\ \ldots\ p_{\sigma(n,q_n)}\right)\)
 and where for all \(i~\in~\enum1n\) we have \(q_i \in \mathbb{N}\) and the
 arguments of \(m_i \in \M{}\) consist in $q_i$ of the previously quantified
-mixin parameters $p_k$, i.e. for all \(k \in \enum1{q_i}\), we
+mixin parameters $p_k$, i.e.~for all \(k \in \enum1{q_i}\), we
 have \(\sigma(i,k) \in \enum1{i-1}\).
 \end{definition}
 
 \begin{definition}[\dep{}, \mixin{} dependencies]
   Given \(m \in \M{}\), we define \(\dep{}(m) \in \powerset\M{}\)
-  as the set of all \mixins{} that occur as parameters of \(m\), i.e.
-  \(\dep{}(m) = \enum{m_1}{m_n}\).
+  as the set of all \mixins{} that occur as parameters of \(m\),
+  i.e.~\(\dep{}(m) = \enum{m_1}{m_n}\).
 \end{definition}
 
 \begin{remark}For all \(i \in \enum1n\), we have
@@ -624,13 +625,13 @@ Record (* or Definition *) #$f$# (T : Type) #\(\pmp{n}\)# : Type := ...
 
 \begin{definition}[$\requires{}$, factory requirements.]
   Given \(f \in \F{}\), we define \(\requires{}(f) \in \powerset\M{}\)
-  as the set of all \mixins{} that occur as parameters of \(f\), i.e.
-  \(\dep{}(f) = \enum{m_1}{m_n}\).
+  as the set of all \mixins{} that occur as parameters of \(f\),
+  i.e.~\(\dep{}(f) = \enum{m_1}{m_n}\).
 \end{definition}
 
 The following property holds,
 \begin{proposition}[\requires{} is closed under \dep{}]
-\(\forall f \in \F{}, \dep{}^\star(\requires{}(f)) \subseteq \requires{}(f)\)
+\(\forall f \in \F{}, \dep{}^\star(\requires{}(f)) \subseteq \requires{}(f).\)
 \end{proposition}
 \begin{proof}
 Because Coq records and global definitions are well typed in the empty context.
@@ -661,7 +662,7 @@ defined if and only if there is a declared builder that shows how to
 build $m$ from $f$. In this case, we say $f$ provides $m$.
 
 \begin{definition}[$\provides{}$]
-  \( \provides{}(f) = \{m | \from{}(f,m) \textrm{ is defined}\}
+  \( \provides{}(f) = \{m \mid \from{}(f,m) \textrm{ is defined}\}
     \in \powerset\M{}\) the set of mixins that a factory
     \(f \in \F{}\) provides, through its \mixinbuilders{}.
 \end{definition}
@@ -676,7 +677,7 @@ different from regular \factories{}, since they are a special case.
   For all \(m \in \M{}\) we have \(\requires{}(m) = \dep{}(m)\),
   \(\provides{}(m) = \{m\}\) and
   \(\from{}(m,m) = \left(\coq{fun T }\ \pmp{n} \ \coq{(x :}\ m\
-    \coq{T }\ p_1\ \ldots p_n\ \coq{) => x}\right) \in \B{}.\)
+    \coq{T }\ p_1\ \ldots p_n\coq{) => x}\right) \in \B{}.\)
 \end{proof}
 
 
@@ -752,12 +753,12 @@ Record #$c$# (T : Type) := { #\(p_1 : m_1\ T\)#; .. ; #\(p_i : m_i\ T\ p_{\sigma
 
 \begin{definition}[\cdef{}, class definition]
   We call \(\cdef{}(c) \in \powerset\M{}\) the set of \mixins{}
-  mentioned in the fields of the \class{}, i.e.
-  \(\{m_1, \ldots,m_n\}\).  Given that \class{} records are well typed
+  mentioned in the fields of the \class{}, i.e.~\(\{m_1, \ldots,m_n\}\).
+  Given that \class{} records are well typed
   in the empty context the set of \mixin{} records is closed
   transitively.  The implementation enforces that no two \class{}
   records contains the same set of \mixins{} (disregarding the order of
-  the fields), i.e. \cdef{} is injective.
+  the fields), i.e.~\cdef{} is injective.
 \end{definition}
 
 \begin{invariant}[\cdef{}]
@@ -771,7 +772,7 @@ Record #$c$# (T : Type) := { #\(p_1 : m_1\ T\)#; .. ; #\(p_i : m_i\ T\ p_{\sigma
 
 Classes could also be seen as factories.
 \begin{proposition}[\( \C{} \subseteq \F{} \)]
-  forall \(m \in \cdef{}(c)\) we have \(\from{}(c,m_i) = p_i,\) and it
+  For all \(m \in \cdef{}(c)\) we have \(\from{}(c,m_i) = p_i,\) and it
   follows that \(\requires{}(c)=\emptyset \),
   \(\provides{}(c)=\cdef{}(c).\)
 \end{proposition}
@@ -815,18 +816,18 @@ behind the scene. However \factory{} types and constructors have
 \mixin{} arguments that must be inferred automatically when used. To
 this end, the commands \hbmixin{} and \hbfactory{} generate
 \phantterms{} for the user to replace uses of constructors of \factories{}.
-These commands first create a record \(f_{aux}\) with a
-constructor \(F_{aux}\) and then create abbreviations \(f\) and \(F\)
-that automatically fill the mixin arguments of \(f_{aux}\) and \(F_{aux}\)
+These commands first create a record \(f_{\aux}\) with a
+constructor \(F_{\aux}\) and then create abbreviations \(f\) and \(F\)
+that automatically fill the mixin arguments of \(f_{\aux}\) and \(F_{\aux}\)
 respectively.
 See \cite[Section 7]{DBLP:conf/itp/MahboubiT13} for a detailed description
 of how to implement these abbreviations in Coq.
 
 \begin{coqcode}
-Record #\(f_{aux}\)# T #\(\pmp{n}\)# := #\(F_{aux}\)# { ... }.
-Notation #$f$# T := (#\(f_{aux}\)# T ...(* $p_1 \ldots p_n$ inferred when $T$ is known *)).
-Notation #$F$# T  #\(x_1\ \ldots\ x_k\)# := (#\(F_{aux}\)# T ...(* $p_1 \ldots p_n$ inferred when $T$ is known *) #\(x_1\ \ldots\ x_k\)#).
-Definition b : #$f$# T := #$F$# T #\(x_1\ \ldots\ x_n\)#
+Record #\(f_{\aux}\)# T #\(\pmp{n}\)# := #\(F_{\aux}\)# { ... }.
+Notation #$f$# T := (#\(f_{\aux}\)# T ...(* $p_1 \ldots p_n$ inferred when $T$ is known *)).
+Notation #$F$# T  #\(x_1\ \ldots\ x_k\)# := (#\(F_{\aux}\)# T ...(* $p_1 \ldots p_n$ inferred when $T$ is known *) #\(x_1\ \ldots\ x_k\)#).
+Definition b : #$f$# T := #$F$# T #\(x_1\ \ldots\ x_n\)#.
 \end{coqcode}
 
 
