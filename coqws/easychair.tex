@@ -199,7 +199,7 @@ Infix    "*"  := mul.
 HB.structure Definition Ring := { A of SemiRing_of_CMonoid A & AbelianGrp_of_CMonoid A }.
 \end{coqcode}
 
-Remark we can write abstract statements combining successive signatures:
+\paragraph{Usage} We can write abstract statements combining successive signatures:
 \begin{coqcode}
 (* An example statement in the signature of an Abelian group G, combining 0 and -. *)
 Check forall G : AbelianGrp.type, forall x : G, x - x = 0.
@@ -209,9 +209,9 @@ Check forall S : SemiRing.type, forall x : S, x * 1 + 0 = x.
 Check forall R : Ring.type, forall x y : R, x * - (1 * y) = - x * y.
 \end{coqcode}
 
-Now, we can equip $\mathbb{Z}$ with commutative monoid, abelian group and
-semi ring instances, and \HB{} equips it automatically with the ring
-one, because there is only one possible choice.
+We can also equip $\mathbb{Z}$ with commutative monoid, abelian group
+and semi ring instances, and \HB{} equips it automatically with a ring
+instance, because there is only one possible choice.
 
 \begin{coqcode}
 HB.instance Definition Z_CMonoid    := CMonoid_of_Type.Build Z 0%Z Z.add
@@ -224,15 +224,15 @@ HB.instance Definition Z_SemiRing   := SemiRing_of_CMonoid.Build Z 1%Z Z.mul
 Check forall x : Z, x * - (1 + x) = 0 + 1.
 \end{coqcode}
 
-
+\paragraph{Factories}
 For space constraints we omit the declaration of the dashed arrows in
 Figure~\ref{fig:hierarchy}, which are Factories, i.e. alternative
-ways of building the same structures, but from different inputs.
+ways of building the same structures from different inputs.
 
-Factories are used to accommodate the insertion of intermediate
+Factories are used to allow the insertion of intermediate
 structures in a hierarchy without breaking user code, as well as to
 implement shortcuts: e.g. the factory to build a \coq{Ring} from a
-\coq{Type} (rightmost dashed arrow) can omit the commutativity axiom
+\coq{Type} can omit the commutativity axiom
 of the addition, since it is implied by the other axioms.
 
 \bibliography{biblio}
