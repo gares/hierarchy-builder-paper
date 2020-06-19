@@ -135,10 +135,10 @@ block of the hierarchy, packing operations and axioms -- to structures.
 
 \paragraph{Example: A hierarchy with a diamond in \HB{}}
 
-We first introduce the base structure of our example,
-\verb-CMonoid-, which is defined in two phases: first its contents
-using \verb-HB.mixin- and then the structure itself is declared using
-\verb-HB.structure.-
+We first introduce the base structure of our example, the structure
+\verb-CMonoid- of commutative monoids, which is defined in two phases:
+first its contents using \verb-HB.mixin- and then the structure itself
+is declared using \verb-HB.structure.-
 
 \begin{coqcode}
 HB.mixin Record CMonoid_of_Type A := { (* The set of axioms making A a commutative monoid. *)
