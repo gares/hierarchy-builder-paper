@@ -208,7 +208,7 @@ Tassi}
 
 
 \begin{frame}[fragile]
-  \frametitle{Implementations in DTT (unbundled classes)}
+  \frametitle{Implementations in DTT (unbundled classes) \\ \hfill [MSCS2011]}
 
 \begin{lstlisting}
 Class |*is_monoid*| T (zero : T) (add : T -> T -> T) := {
@@ -293,7 +293,8 @@ Structure |*monoidType*| : Type := {
 
 
 \begin{frame}[fragile]
-  \frametitle{Implementations in DTT (packed classes)}
+  \frametitle{Implementations in DTT (packed classes) \\ \hfill [TPHOL
+    2009]}
 
 \begin{lstlisting}
 Record |*is_monoid*| (T : Type) : Type := { zero ; ..}.
@@ -349,6 +350,7 @@ Structure |*groupType*| : Type :=
     \hfill ($+$ special case for varieties).
   \item {\sc Lean3/Mathlib}:     Semi-bundled \alt<3>{\alert{type classes}}{records}.
   \item {\sc Agda}:             Bundled and semi-bundled records.
+  \item ...
   \end{itemize}
   \vfill
   \pause
@@ -356,8 +358,7 @@ Structure |*groupType*| : Type :=
   \vfill
   \pause
 
-\center{\textbf{Representations work hand in hand with an inference
-  mechanism.}}
+\center{\textbf{Representations work hand in hand with tooling.}}
 
 \end{frame}
 
@@ -368,7 +369,8 @@ Structure |*groupType*| : Type :=
 
 
   \begin{itemize}
-  \item {\sc Coq/Mathcomp}:     canonicals \alert<1>{$+$ heavy boilerplate $+$ checker}
+  \item {\sc Coq/Mathcomp}:     canonicals \alert<1>{$+$ boilerplate
+      $+$ validator [IJCAR]}
   \item {\sc Coq/Math-Classes}: type classes \alert<1>{$+$ boilerplate $+$ hints}
   \item {\sc Lean3/Mathlib}:     type classes \alert<1>{$+$ priorities $+$ linter}
   \item {\sc Agda}:             records \alert<1>{$+$ open and renaming directives}
@@ -471,9 +473,8 @@ Structure |*groupType*| : Type :=
     $\leftarrow$ ...
 
 
-  \item Euclidean Spaces $\rightarrow$ Normed Spaces $\rightarrow$
-    Complete Space $\rightarrow$ Metric Spaces $\rightarrow$ Topological
-    Spaces $\rightarrow$ ...
+  \item Normed Space $\rightarrow$ Metric Spaces $\rightarrow$
+    Topological Spaces $\rightarrow$ ...
 
   \end{itemize}
 
@@ -494,7 +495,7 @@ Structure |*groupType*| : Type :=
 \end{frame}
 
 \begin{frame}
-  \frametitle{More examples}
+  \frametitle{More examples \hfill [IJCAR]}
 
 \begin{tikzpicture}[line width=1pt, structure/.style={draw, rounded corners=1mm, fill=white}, new/.style={preaction={fill, white}, pattern=crosshatch dots, pattern color=lightgray}, scale=0.7]
  \useasboundingbox (-6, -.5) rectangle (12, 10.5);
@@ -575,10 +576,10 @@ Structure |*groupType*| : Type :=
       \item \textbf{Compositional}: no need to start from scratch every time.
         (E.g. the product of two groups is a group)
         \pause\vfill
-      \item \textbf{Noisy}: changes the internal definition of a structure.
+      \item \textbf{Noisy} internal definition of a structure.
         (E.g. defining a commutative monoid from a monoid, one gets an unnecessary axiom),
         \pause\vfill
-      \item \textbf{Non-robust}: breakage of user code when adding new
+      \item \textbf{Non-robust} when adding new
         intermediate structures, \pause\vfill
       \end{itemize}
     \end{column}
@@ -587,7 +588,7 @@ Structure |*groupType*| : Type :=
       \item \textbf{Flexible}: no need to cut structures
         into small bits,
         \pause\vfill
-      \item \textbf{Robust}: lets us fix the operations and axioms
+      \item \textbf{Robust}: we can fix operations and axioms
         once and for all.
         \pause\vfill
       \item \textbf{Not suitable for inference}: Major breakage when
@@ -717,7 +718,7 @@ HB.instance Definition Z_is_monoid : |*is_monoid*| Z := ...
 \begin{frame}
   \frametitle{Meta programming in {\sc Coq-ELPI}}
 
-  \textbf{{\sc Elpi} is a programming language,}
+  \textbf{{\sc Elpi} is a programming language,} \hfill [LPAR-20]
   \begin{itemize}
   \item prolog-like: \textbf{programs and data are clauses}
   \item with binders, unification and constraints
@@ -785,7 +786,7 @@ pred factory-requires o:factoryname, o:list mixinname.
 
   \vfill\pause
   Also, \textsc{Coq-ELPI} turned out to be a very comfortable
-  meta-programming language for this.
+  meta-programming language for this (approx. 2000 loc).
 
 \end{frame}
 
@@ -794,6 +795,10 @@ pred factory-requires o:factoryname, o:list mixinname.
   \begin{itemize}
   \item Adding support for parameters. (debugging phase in progress)
     \vfill
+  \item Replacing all uses in math-comp and extensions. (just started)
+    \vfill
+  \item Get better error messages. (work in progress)
+    \vfill
   \item Detecting and fixing competing inheritance paths.
     \vfill
   \item Generating hierarchies of morphisms from structures.
@@ -801,10 +806,6 @@ pred factory-requires o:factoryname, o:list mixinname.
   \item Generating hierarchies of subobjects from structures.
     \vfill
   \item Supporting multiple instances on the same carrier.
-    \vfill
-  \item Replacing all uses in math-comp and extensions. (just started)
-    \vfill
-  \item Get better error messages. (work in progress)
   \end{itemize}
 \end{frame}
 
