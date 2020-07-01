@@ -9,7 +9,7 @@
 with import nixpkgs config;
 stdenv.mkDerivation {
   name = "env";
-  buildInputs = (with coqPackages_8_10; [ coq hierarchy-builder ]) ++ (with python3Packages; [pygments]);
+  buildInputs = (with coqPackages_8_11; [ coq hierarchy-builder ]) ++ (with python3Packages; [pygments]);
   shellHook = ''
     nixEnv () {
       echo "Here is your work environement"
