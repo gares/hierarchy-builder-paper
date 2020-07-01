@@ -8,6 +8,8 @@
 \usepackage[normalem]{ulem}
 \usepackage{natbib}
 \usepackage{apalike}
+\usepackage{minted} % pip3 install pygments, pdflatex -shell-escape hb
+\newminted[elpicode]{../elpi.py:ElpiLexer -x}{linenos=false,fontsize=\footnotesize,frame=bottomline}
 
 % \usepackage{bibentry}
 % \usepackage{enumitem}
@@ -744,16 +746,16 @@ HB.instance Definition Z_is_monoid : |*is_monoid*| Z := ...
   \item The predicate \L{from} stores an association between a factory
     \L{F}, a mixin \L{M} and the term \L{B} that can be used to build
     mixin \L{M} from factory \L{F}.
-\begin{lstlisting}[language=Prolog, basicstyle=\footnotesize]
+\begin{elpicode}
 pred from o:factoryname, o:mixinname, o:term.
-\end{lstlisting}
+\end{elpicode}
 \vfill
   \item The predicate {\footnotesize\tt factory-requires} stores an
     association between a factory and a list of mixins that are
     pre-requisites to inhabiting this factory.
-\begin{lstlisting}[language=Prolog, basicstyle=\footnotesize]
+\begin{elpicode}
 pred factory-requires o:factoryname, o:list mixinname.
-\end{lstlisting}
+\end{elpicode}
     e.g. \L{group_of_monoid T} has the prerequisite that \L{T} is a
     monoid.
   \end{itemize}
